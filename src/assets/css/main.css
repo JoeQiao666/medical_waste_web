@@ -176,9 +176,13 @@ a {
 .crumbs,.headSelect,.cloudBox{
     justify-content: space-between;
 }
-.cloudBox{
+.borderBox,.cloudBox{
     margin-top:20px;
     border:1px solid #D7D7D7;
     padding:15px;
+}
+.titleIcon{
+    width:18px;
+    margin-right: 5px;
 }
 

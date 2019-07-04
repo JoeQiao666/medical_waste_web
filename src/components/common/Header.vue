@@ -2,7 +2,7 @@
     <div class="header">
         <div class="logo" @click="goIndex" >
           <!-- <img src="../../assets/img/logo.png" alt=""> -->
-             vue后台管理系统
+             医疗废物管理系统
         </div>
         <div class="header-right">
             <div class="header-user-con">
