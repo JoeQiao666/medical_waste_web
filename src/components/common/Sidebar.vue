@@ -68,6 +68,11 @@
                                 index: '/allCount',
                                 icon: 'fa fa-dot-circle-o',
                                 title: '总量统计'
+                            },
+                            {
+                                index: '/officeCount',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '科室统计'
                             }
                             ]
                     },

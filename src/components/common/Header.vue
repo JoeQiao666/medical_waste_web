@@ -6,6 +6,7 @@
         </div>
         <div class="header-right">
             <div class="header-user-con">
+                <div style="    font-size: 17px;">{{cName}}</div>
                 <!-- 全屏显示 -->
                 <div class="btn-fullscreen" @click="handleFullScreen">
                     <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
@@ -36,6 +37,7 @@
                 collapse: false,
                 fullscreen: false,
                 name: 'linxin',
+                cName:'赛虹桥社区卫生服务中心'
             }
         },
         computed:{
@@ -145,6 +147,8 @@
         text-align: center;
         border-radius: 15px;
         cursor: pointer;
+        margin-bottom: -4px;
+         margin-left: 8px;
     }
     .btn-bell-badge{
         position: absolute;
@@ -163,7 +167,7 @@
         margin-left: 10px;
     }
     .user-avator{
-        margin-left: 20px;
+        margin-left: 8px;
     }
     .user-avator img{
         display: block;

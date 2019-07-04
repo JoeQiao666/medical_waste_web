@@ -25,6 +25,11 @@ export default new Router({
                     meta: { title: '总量统计' }
                 },
                 {
+                    path: '/officeCount',
+                    component: resolve => require(['../components/page/officeCount/officeCount.vue'], resolve),
+                    meta: { title: '科室统计' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }

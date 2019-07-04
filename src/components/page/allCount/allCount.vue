@@ -26,9 +26,6 @@
                   <div class="canvas"  v-show="data1.length>0" id="mountNode1"></div>
                 </div>
                 <div style="width:30%">
-                  <div class="flex headSelect" style="margin-bottom:50px">
-                    <div></div>
-                  </div>
                   <div class="canvas"  v-show="data2.length>0" id="mountNode2"></div>
                 </div>
               </div>
@@ -47,9 +44,6 @@
                   <div class="canvas"  v-show="data3.length>0" id="mountNode3"></div>
                 </div>
                 <div style="width:30%">
-                  <div class="flex headSelect" style="margin-bottom:50px">
-                    <div></div>
-                  </div>
                   <div class="canvas"  v-show="data4.length>0" id="mountNode4"></div>
                 </div>
               </div>
@@ -356,7 +350,7 @@ export default {
     text-align: center;
     box-sizing: border-box;
     overflow: hidden;
-    min-height: 345px;
+    min-height: 300px;
     position: relative;
 }
 

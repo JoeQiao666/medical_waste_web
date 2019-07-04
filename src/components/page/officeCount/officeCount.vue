@@ -3,7 +3,10 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-location-outline"></i> 首页
+          <i class="el-icon-location-outline"></i> 统计分析
+        </el-breadcrumb-item>
+        <el-breadcrumb-item>
+          科室统计
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -15,22 +18,12 @@
               <div class="flex  headSelect" style="margin-bottom:50px;min-height:auto">
                   <div class="flex ">
                     <img class="titleIcon" src="../../../assets/img/day.png" alt="">
-                    <div>近30天回收医废总重量</div>
+                    <div>近30天各科室产生医废总量</div>
                   </div>
-                  <!-- <div>
-                        <el-radio v-model="date" label="one">30天</el-radio>
-                        <el-radio v-model="date" label="all">12个月</el-radio>
-                  </div> -->
               </div>
               <div class="flex" style="align-items: normal;">
-                <div style="width:70%">
+                <div style="width:100%">
                   <div class="canvas"  v-show="data1.length>0" id="mountNode1"></div>
-                </div>
-                <div style="width:30%">
-                  <div class="flex headSelect" style="margin-bottom:50px">
-                    <div></div>
-                  </div>
-                  <div class="canvas"  v-show="data2.length>0" id="mountNode2"></div>
                 </div>
               </div>
             </div>
@@ -40,22 +33,12 @@
               <div class="flex  headSelect" style="margin-bottom:50px;min-height:auto">
                 <div class="flex ">
                   <img class="titleIcon" src="../../../assets/img/day.png" alt="">
-                    <div>近30天回收盐水瓶总重量</div>
+                    <div>近30天各科室产生盐水瓶总重量</div>
                 </div>
-                  <!-- <div>
-                      <el-radio v-model="date" label="one">30天</el-radio>
-                      <el-radio v-model="date" label="all">12个月</el-radio>
-                </div> -->
               </div>
               <div class="flex" style="align-items: normal;">
-                <div style="width:70%">
+                <div style="width:100%">
                   <div class="canvas"  v-show="data3.length>0" id="mountNode3"></div>
-                </div>
-                <div style="width:30%">
-                  <div class="flex headSelect" style="margin-bottom:50px">
-                    <div></div>
-                  </div>
-                  <div class="canvas"  v-show="data4.length>0" id="mountNode4"></div>
                 </div>
               </div>
             </div>
@@ -141,11 +124,11 @@ export default {
       activeName: "1",
       data1: [
         {
-          year: "1951 年",
+          year: "输液大厅",
           sales: 38
         },
         {
-          year: "1952 年",
+          year: "急诊（门诊）",
           sales: 52
         },
         {
@@ -193,16 +176,6 @@ export default {
           sales: 38
         }
       ],
-      data2:[{
-        type: '感染性',
-        value: 7140
-      }, {
-        type: '损伤性',
-        value: 3875
-      }, {
-        type: '病理性',
-        value: 2267
-      }],
       data3: [
         {
           year: "1951 年",
@@ -257,16 +230,6 @@ export default {
           sales: 38
         }
       ],
-      data4:[{
-        type: '感染性',
-        value: 7140
-      }, {
-        type: '损伤性',
-        value: 3875
-      }, {
-        type: '病理性',
-        value: 2267
-      }],
       tableData:[
       
       ],
@@ -274,14 +237,6 @@ export default {
       cur_page:1,
     }
   },
-  // watch:{
-  //    date:{
-  //       handler: function (old,newV) {
-  //          console.log(newV)
-  //       },
-  //       deep: true
-  //   },
-  // },
   methods: {
     // status格式化
     formatter(row, column) {
@@ -303,12 +258,10 @@ export default {
        if(tab.index==1){
            setTimeout(()=>{
             this.intChart2(this.data3)
-            this.intBar2(this.data4)
            },500)
        }else{
           setTimeout(()=>{
             this.intChart1(this.data1)
-            this.intBar1(this.data2)
            },500)
        }
     },
@@ -322,7 +275,7 @@ export default {
         container: "mountNode1",
         forceFit: true,
         height:300,
-        padding:'auto'
+        padding: [20, 'auto', 50, 'auto']
       });
       this.chart1.source(data);
       // 自定义模板，自定义tooltip展示
@@ -330,48 +283,14 @@ export default {
       itemTpl: '<li>总重量: {value}</li>',
       position:'left'
       });
-      this.chart1.interval().position("year*sales");
-      this.chart1.render();
-    },
-    // 初始化饼图
-    intBar1(data){
-      var startAngle = -Math.PI / 2 - Math.PI / 4;
-      var ds = new DataSet();
-      var dv = ds.createView().source(data);
-        dv.transform({
-            type: 'percent',
-            field: 'value',
-            dimension: 'type',
-            as: 'percent'
-        });
-        if(this.chart2!==undefined){
-            this.chart2.changeData(dv);
-            return 
+      this.chart1.interval().position("year*sales").opacity(1).label('value', {
+        useHtml: true,
+        htmlTemplate: function htmlTemplate(text, item) {
+          var a = item.point;
+          return '<span class="g2-label-item"><p class="g2-label-item-value">' + a.sales + 'kg</p></div>';
         }
-        this.chart2 = new G2.Chart({
-            container: 'mountNode2',
-            forceFit: true,
-            height: 300,
-            padding: 'auto'
-        });
-        this.chart2.source(dv);
-        this.chart2.legend(true);
-        this.chart2.coord('theta', {
-            radius: 0.75,
-            innerRadius: 0.7,
-            startAngle: startAngle,
-            endAngle: startAngle + Math.PI * 2
-        });
-        this.chart2.intervalStack().position('value').color('type', [ '#00FF7F', '#46A3FC','#DC143C']).opacity(1).label('percent', {
-            formatter: function formatter(val,item) {
-              return item.point.type+':'+parseFloat(val * 100).toFixed(2) + '%';
-            }
-        }).select;
-        this.chart2.guide().html({
-          position: ['50%', '50%'],
-          html: '<div class="g2-guide-html"><p class="btitle">近30天各类型占比</p></div>'
-        });
-        this.chart2.render();
+      });
+      this.chart1.render();
     },
     // 初始化柱状图2
     intChart2(data) {
@@ -391,54 +310,19 @@ export default {
       itemTpl: '<li>总重量: {value}</li>',
       position:'left'
       });
-      this.chart3.interval().position("year*sales");
-      this.chart3.render();
-    },
-    // 初始化饼图2
-    intBar2(data){
-      var startAngle = -Math.PI / 2 - Math.PI / 4;
-      var ds = new DataSet();
-      var dv = ds.createView().source(data);
-        dv.transform({
-            type: 'percent',
-            field: 'value',
-            dimension: 'type',
-            as: 'percent'
-        });
-        if(this.chart4!==undefined){
-            this.chart4.changeData(dv);
-            return 
+      this.chart3.interval().position("year*sales").opacity(1).label('value', {
+        useHtml: true,
+        htmlTemplate: function htmlTemplate(text, item) {
+          var a = item.point;
+          return '<span class="g2-label-item"><p class="g2-label-item-value">' + a.sales + 'kg</p></div>';
         }
-        this.chart4 = new G2.Chart({
-            container: 'mountNode4',
-            forceFit: true,
-            height: 300,
-            padding: 'auto'
-        });
-        this.chart4.source(dv);
-        this.chart4.legend(true);
-        this.chart4.coord('theta', {
-            radius: 0.75,
-            innerRadius: 0.7,
-            startAngle: startAngle,
-            endAngle: startAngle + Math.PI * 2
-        });
-        this.chart4.intervalStack().position('value').color('type', [ '#00FF7F', '#46A3FC','#DC143C']).opacity(1).label('percent', {
-            formatter: function formatter(val,item) {
-              return item.point.type+':'+parseFloat(val * 100).toFixed(2) + '%';
-            }
-        }).select;
-        this.chart4.guide().html({
-          position: ['50%', '50%'],
-          html: '<div class="g2-guide-html"><p class="btitle">近30天各类型占比</p></div>'
-        });
-        this.chart4.render();
+      });
+      this.chart3.render();
     },
   },
   mounted() {
      setTimeout(() => {
            this.intChart1(this.data1);
-           this.intBar1(this.data2);
      }, 500);
  
   }
@@ -451,7 +335,7 @@ export default {
     text-align: center;
     box-sizing: border-box;
     overflow: hidden;
-    min-height: 345px;
+    min-height: 300px;
     position: relative;
 }
 
