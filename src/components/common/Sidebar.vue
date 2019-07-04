@@ -59,12 +59,25 @@
                             }
                             ]
                     },
+                    {
+                        icon: require('../../assets/img/chart.png'),
+                        index: '/allCount',
+                        title: '统计分析',
+                        subs: [
+                            {
+                                index: '/allCount',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '总量统计'
+                            }
+                            ]
+                    },
                 ],
             }
         },
         computed:{
             onRoutes(){
-                return this.$route.path.replace('/','');
+                // return this.$route.path.replace('/','');
+                return this.$route.path;
             }
         },
         created(){

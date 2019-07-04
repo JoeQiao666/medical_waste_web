@@ -3,7 +3,10 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-location-outline"></i> 首页
+          <i class="el-icon-location-outline"></i> 统计分析
+        </el-breadcrumb-item>
+        <el-breadcrumb-item>
+            总量统计
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -15,15 +18,11 @@
               <div class="flex  headSelect" style="margin-bottom:50px;min-height:auto">
                   <div class="flex ">
                     <img class="titleIcon" src="../../../assets/img/day.png" alt="">
-                    <div>近30天回收医废总重量</div>
+                    <div>近12月入库医废总量统计</div>
                   </div>
-                  <!-- <div>
-                        <el-radio v-model="date" label="one">30天</el-radio>
-                        <el-radio v-model="date" label="all">12个月</el-radio>
-                  </div> -->
               </div>
               <div class="flex" style="align-items: normal;">
-                <div style="width:70%">
+                <div style="width:70%;height:calc(100vh - 368px)"   ref='box' >
                   <div class="canvas"  v-show="data1.length>0" id="mountNode1"></div>
                 </div>
                 <div style="width:30%">
@@ -40,15 +39,11 @@
               <div class="flex  headSelect" style="margin-bottom:50px;min-height:auto">
                 <div class="flex ">
                   <img class="titleIcon" src="../../../assets/img/day.png" alt="">
-                    <div>近30天回收盐水瓶总重量</div>
+                    <div>近12月入库盐水瓶总重量</div>
                 </div>
-                  <!-- <div>
-                      <el-radio v-model="date" label="one">30天</el-radio>
-                      <el-radio v-model="date" label="all">12个月</el-radio>
-                </div> -->
               </div>
               <div class="flex" style="align-items: normal;">
-                <div style="width:70%">
+                <div style="width:70%;height:calc(100vh - 368px)"   ref='box2'>
                   <div class="canvas"  v-show="data3.length>0" id="mountNode3"></div>
                 </div>
                 <div style="width:30%">
@@ -62,72 +57,6 @@
           </el-tab-pane>
         </el-tabs>
       </div>
-      <div class="borderBox">
-         <div class="flex " style="margin-bottom:10px;">
-                <img class="titleIcon" src="../../../assets/img/today.png" alt="">
-                <div>今日医疗废物运转记录</div>
-         </div>
-         <el-table
-              :data="tableData"
-              style="width: 100%"
-              v-loading="loading2"
-              >
-              <el-table-column
-                type="index"
-                label="序号"
-                sortable
-                width="80">
-              </el-table-column>
-              <el-table-column
-                prop="createTime"
-                sortable
-                label="新增时间"
-                width="100">
-              </el-table-column>
-                <el-table-column
-                prop="name"
-                label="科室">
-              </el-table-column>
-                <el-table-column
-                prop="weight"
-                sortable
-                label="重量"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="type"
-                sortable
-                label="类型"
-              >
-              </el-table-column>
-            
-              <el-table-column
-                prop="status"
-                label="记录状态"
-                sortable
-                :formatter="formatter"
-                >
-              </el-table-column>
-              <el-table-column
-                prop="p1"
-                label="操作人"
-                sortable
-                :formatter="formatter"
-                >
-              </el-table-column>
-              <el-table-column
-                prop="p2"
-                label="交接人"
-                sortable
-                :formatter="formatter"
-                >
-              </el-table-column>
-            </el-table>
-        <div class="pagination">
-            <el-pagination background @current-change="handleCurrentChange" layout="total, prev, pager, next, jumper" :total="total">
-            </el-pagination>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -137,7 +66,6 @@ export default {
   data() {
     return {
       loading: false,
-      loading2: false,
       activeName: "1",
       data1: [
         {
@@ -274,30 +202,7 @@ export default {
       cur_page:1,
     }
   },
-  // watch:{
-  //    date:{
-  //       handler: function (old,newV) {
-  //          console.log(newV)
-  //       },
-  //       deep: true
-  //   },
-  // },
   methods: {
-    // status格式化
-    formatter(row, column) {
-              var is='';
-              if(row.status==0){
-                  is='激活';
-              }else{
-                  is='关闭';
-              }
-              return is;
-    },
-    // 点击切换页码
-    handleCurrentChange(val){
-          this.cur_page = val;
-          // this.getTask();
-    },
     // 切换tab
     handleClick(tab, event) {
        if(tab.index==1){
@@ -321,7 +226,7 @@ export default {
       this.chart1 = new G2.Chart({
         container: "mountNode1",
         forceFit: true,
-        height:300,
+        height:this.$refs.box.offsetHeight,
         padding:'auto'
       });
       this.chart1.source(data);
@@ -351,7 +256,7 @@ export default {
         this.chart2 = new G2.Chart({
             container: 'mountNode2',
             forceFit: true,
-            height: 300,
+            height: this.$refs.box.offsetHeight,
             padding: 'auto'
         });
         this.chart2.source(dv);
@@ -369,7 +274,7 @@ export default {
         }).select;
         this.chart2.guide().html({
           position: ['50%', '50%'],
-          html: '<div class="g2-guide-html"><p class="btitle">近30天各类型占比</p></div>'
+          html: '<div class="g2-guide-html"><p class="btitle">近12个月各类型占比</p></div>'
         });
         this.chart2.render();
     },
@@ -382,7 +287,7 @@ export default {
       this.chart3 = new G2.Chart({
         container: "mountNode3",
         forceFit: true,
-        height:300,
+        height:this.$refs.box2.offsetHeight,
         padding:'auto'
       });
       this.chart3.source(data);
@@ -412,7 +317,7 @@ export default {
         this.chart4 = new G2.Chart({
             container: 'mountNode4',
             forceFit: true,
-            height: 300,
+            height: this.$refs.box2.offsetHeight,
             padding: 'auto'
         });
         this.chart4.source(dv);
@@ -430,7 +335,7 @@ export default {
         }).select;
         this.chart4.guide().html({
           position: ['50%', '50%'],
-          html: '<div class="g2-guide-html"><p class="btitle">近30天各类型占比</p></div>'
+          html: '<div class="g2-guide-html"><p class="btitle">近12个月各类型占比</p></div>'
         });
         this.chart4.render();
     },
