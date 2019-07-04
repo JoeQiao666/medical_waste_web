@@ -171,3 +171,14 @@ a {
 .v-note-wrapper .v-note-panel {
     min-height: 500px;
 }
+
+
+.crumbs,.headSelect,.cloudBox{
+    justify-content: space-between;
+}
+.cloudBox{
+    margin-top:20px;
+    border:1px solid #D7D7D7;
+    padding:15px;
+}
+

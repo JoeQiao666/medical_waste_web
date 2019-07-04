@@ -48,13 +48,13 @@
                 collapse: false,
                 items: [
                     {
-                        icon: require('../../assets/img/trend.png'),
+                        icon: require('../../assets/img/home.png'),
                         index: '/index',
                         title: '首页',
                         subs: [
                             {
                                 index: '/index',
-                                icon: 'fa fa-hand-pointer-o',
+                                icon: 'fa fa-dot-circle-o',
                                 title: '首页'
                             }
                             ]
@@ -141,5 +141,6 @@
         width: 17px;
         height: 17px;
         margin-right: 5px;
+        transform: translateY(-1px);
     }
 </style>
