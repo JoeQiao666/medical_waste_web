@@ -47,6 +47,7 @@
                                 v-model="date"
                                 :picker-options="pickerOptions"
                                 type="daterange"
+                                value-format="yyyy-MM-dd"
                                 range-separator="~"
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期">
@@ -139,6 +140,7 @@
 </template>
 
 <script>
+const moment = require("moment");
 export default {
   data() {
     return {
@@ -297,7 +299,7 @@ export default {
     formatter(row, column) {
       var w=row[column.property]
       if(w==''){
-        w='-'
+        w='0kg'
       }else{
         w=w+'kg'
       }
@@ -415,13 +417,16 @@ export default {
     },
     // 合计
      getSummaries(param) {
-       return ['','合计','111kg','11kg','12kg','-','-','-']
+       return ['','合计','111kg','11kg','12kg','0kg','0kg','0kg']
      }
   },
   mounted() {
      setTimeout(() => {
            this.intChart1(this.data1);
      }, 500);
+
+    var end = moment().format("YYYY-MM-DD"), start = moment().subtract(30, "days").format("YYYY-MM-DD");
+    this.date = [start, end];
  
   }
 };

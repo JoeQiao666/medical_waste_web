@@ -35,6 +35,16 @@ export default new Router({
                     meta: { title: '入库统计' }
                 },
                 {
+                    path: '/outCount',
+                    component: resolve => require(['../components/page/outCount/outCount.vue'], resolve),
+                    meta: { title: '出库统计' }
+                },
+                {
+                    path: '/traceCode',
+                    component: resolve => require(['../components/page/traceCode/traceCode.vue'], resolve),
+                    meta: { title: '溯源码申请' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }

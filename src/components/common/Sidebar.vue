@@ -78,6 +78,28 @@
                                 index: '/putCount',
                                 icon: 'fa fa-dot-circle-o',
                                 title: '入库统计'
+                            },
+                            {
+                                index: '/outCount',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '出库统计'
+                            }
+                            ]
+                    },
+                    {
+                        icon: require('../../assets/img/chart.png'),
+                        index: '/traceCode',
+                        title: '溯源码',
+                        subs: [
+                            {
+                                index: '/traceCode',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '溯源码申请'
+                            },
+                            {
+                                index: '/traceCode',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '溯源码统计分析'
                             }
                             ]
                     },

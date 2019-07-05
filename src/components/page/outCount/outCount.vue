@@ -25,7 +25,7 @@
          <div class="flex headSelect" style="margin-bottom:10px;">
                 <div class='flex'>
                   <img class="titleIcon" src="../../../assets/img/time.png" alt="">
-                  <div style="margin-top: -4px;">入库报表</div>
+                  <div style="margin-top: -4px;">出库报表</div>
                   <div class="radio" >
                             <el-radio v-model="cType" label="day">日统计</el-radio>
                             <el-radio v-model="cType" label="month">月统计</el-radio>
