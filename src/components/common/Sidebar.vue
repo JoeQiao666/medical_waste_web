@@ -97,7 +97,7 @@
                                 title: '溯源码申请'
                             },
                             {
-                                index: '/traceCode',
+                                index: '/codeAnalyze',
                                 icon: 'fa fa-dot-circle-o',
                                 title: '溯源码统计分析'
                             }

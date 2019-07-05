@@ -189,3 +189,7 @@ a {
   font-size: 13px;
 }
 
+.pointer{
+ cursor: pointer;
+ color:#3F9EFF;
+}

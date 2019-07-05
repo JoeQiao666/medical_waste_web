@@ -1,0 +1,455 @@
+<template>
+  <div>
+    <div class="crumbs">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item>
+          <i class="el-icon-location-outline"></i> 统计分析
+        </el-breadcrumb-item>
+        <el-breadcrumb-item>
+          科室统计
+        </el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="container">
+      <div v-loading="loading" >
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+          <el-tab-pane label="医废类" name="1">
+          </el-tab-pane>
+          <el-tab-pane label="盐水瓶" name="2">
+          </el-tab-pane>
+        </el-tabs>
+        <div class="cloudBox" >
+              <div class="flex  headSelect" style="margin-bottom:30px;min-height:auto">
+                  <div class="flex ">
+                    <img class="titleIcon" src="../../../assets/img/day.png" alt="">
+                    <div>{{title}}</div>
+                  </div>
+              </div>
+              <div class="flex" style="align-items: normal;">
+                <div style="width:100%">
+                  <div align="left" style="font-size:14px" >赛虹桥卫生服务中心</div>
+                  <div class="canvas"  v-show="data1.length>0" id="mountNode1"></div>
+                </div>
+              </div>
+        </div>
+      </div>
+      <div class="borderBox">
+         <div class="flex headSelect" style="margin-bottom:10px;">
+                <div class='flex'>
+                  <img class="titleIcon" src="../../../assets/img/time.png" alt="">
+                  <div style="margin-top: -4px;">各科室重量统计</div>
+                </div>
+                <div class="flex funcHead">
+                         <div class="block">
+                               <span class="demonstration">重量统计时间：</span>
+                               <el-date-picker
+                                style="width:280px"
+                                v-model="date"
+                                :picker-options="pickerOptions"
+                                type="daterange"
+                                value-format="yyyy-MM-dd"
+                                range-separator="~"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期">
+                              </el-date-picker>
+                        </div>
+                        <div class="flex" style="margin-left:10px">
+                          <span class="demonstration" style="width:86px">科室名称：</span>
+                          <el-input style="width:140px" v-model="kName" placeholder="请输入科室名称"></el-input>
+                        </div >
+                        <el-button style="margin-left:10px" type="primary" icon="el-icon-search">搜索</el-button>
+                        <el-dropdown @command="getExcel">
+                            <el-button type="primary" style="margin-left:10px" >
+                              导出报表<i class="el-icon-arrow-down el-icon--right"></i>
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown"  >
+                              <el-dropdown-item  command="1" >总览表</el-dropdown-item>
+                              <el-dropdown-item  command="2" >明细表</el-dropdown-item>
+                              <el-dropdown-item  command="3" >明细总览表</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                </div>
+         </div>
+         <el-table
+              :data="tableData"
+              style="width: 100%"
+              v-loading="loading2"
+              show-summary
+              :summary-method="getSummaries"
+              @selection-change="handleSelectionChange"
+              >
+              <el-table-column
+                type="selection"
+                width="55">
+              </el-table-column>
+                <el-table-column
+                prop="name"
+                label="科室">
+              </el-table-column>
+                <el-table-column
+                prop="weight"
+                sortable
+                label="总重量"
+                :formatter="formatter"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="weight1"
+                sortable
+                label="感染类总重量"
+                :formatter="formatter"
+              >
+              </el-table-column>
+            
+              <el-table-column
+                prop="weight2"
+                label="损伤类总重量"
+                sortable
+                :formatter="formatter"
+                >
+              </el-table-column>
+              <el-table-column
+                prop="weight3"
+                label="病理类总重量"
+                sortable
+                :formatter="formatter"
+                >
+              </el-table-column>
+              <el-table-column
+                prop="weight4"
+                label="药物类总重量"
+                sortable
+                :formatter="formatter"
+                >
+              </el-table-column>
+              <el-table-column
+                prop="weight5"
+                label="化学类总重量"
+                sortable
+                :formatter="formatter"
+                >
+              </el-table-column>
+          </el-table>
+          <div class="pagination">
+              <el-pagination background @current-change="handleCurrentChange" layout="total, prev, pager, next, jumper" :total="total">
+              </el-pagination>
+          </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+const moment = require("moment");
+export default {
+  data() {
+    return {
+      loading: false,
+      loading2: false,
+      title:'近30天各科室产生医废总量',
+      type:'1',
+      activeName: "1",
+      kName: "",
+      date:'',
+      data1: [
+        {
+          year: "输液大厅",
+          sales: 38
+        },
+        {
+          year: "急诊（门诊）",
+          sales: 52
+        },
+        {
+          year: "1956 年",
+          sales: 61
+        },
+        {
+          year: "1957 年",
+          sales: 145
+        },
+        {
+          year: "1958 年",
+          sales: 48
+        },
+        {
+          year: "1959 年",
+          sales: 38
+        },
+        {
+          year: "1960 年",
+          sales: 38
+        },
+        {
+          year: "1962 年",
+          sales: 38
+        },
+            {
+          year: "1983 年",
+          sales: 145
+        },
+        {
+          year: "1984 年",
+          sales: 48
+        },
+        {
+          year: "1985 年",
+          sales: 38
+        },
+        {
+          year: "1986年",
+          sales: 38
+        },
+        {
+          year: "1987 年",
+          sales: 38
+        }
+      ],
+      data3: [
+        {
+          year: "1951 年",
+          sales: 38
+        },
+        {
+          year: "1952 年",
+          sales: 52
+        },
+        {
+          year: "1956 年",
+          sales: 61
+        },
+        {
+          year: "1957 年",
+          sales: 145
+        },
+        {
+          year: "1958 年",
+          sales: 48
+        },
+        {
+          year: "1959 年",
+          sales: 38
+        },
+        {
+          year: "1960 年",
+          sales: 38
+        },
+        {
+          year: "1962 年",
+          sales: 38
+        },
+            {
+          year: "1983 年",
+          sales: 145
+        },
+        {
+          year: "1984 年",
+          sales: 48
+        },
+        {
+          year: "1985 年",
+          sales: 38
+        },
+        {
+          year: "1986年",
+          sales: 38
+        },
+        {
+          year: "1987 年",
+          sales: 38
+        }
+      ],
+      tableData:[
+        {id:1,name:'输液大厅',weight:'71.25',weight1:'21.25',weight2:'13.14',weight3:"",weight4:"",weight5:""},
+      ],
+      total:0,
+      cur_page:1,
+      pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+      },
+      chooseIds:[]
+    }
+  },
+  methods: {
+    // status格式化
+    formatter(row, column) {
+      var w=row[column.property]
+      if(w==''){
+        w='0kg'
+      }else{
+        w=w+'kg'
+      }
+      return w;
+    },
+    // 点击切换页码
+    handleCurrentChange(val){
+          this.cur_page = val;
+          // this.getTask();
+    },
+    // 切换tab
+    handleClick(tab, event) {
+       if(tab.index==1){
+         this.type=2;
+         this.title='近30天各科室产生盐水瓶总重量';
+       }else{
+         this.type=1;
+         this.title='近30天各科室产生医废总量';
+       }
+          this.intChart1(this.data1)
+    },
+    // 初始化柱状图
+    intChart1(data) {
+      if(this.chart1!==undefined){
+          this.chart1.changeData(data);
+          return 
+      }
+      this.chart1 = new G2.Chart({
+        container: "mountNode1",
+        forceFit: true,
+        height:300,
+        padding: [20, 'auto', 50, 'auto']
+      });
+      this.chart1.source(data);
+      this.chart1.legend(false);
+      // 自定义模板，自定义tooltip展示
+      this.chart1.tooltip({
+      itemTpl: '<li>总重量: {value}</li>',
+      position:'left'
+      });
+      this.chart1.interval().position("year*sales").opacity(1).label('value', {
+        useHtml: true,
+        htmlTemplate: function htmlTemplate(text, item) {
+          var a = item.point;
+          return '<span class="g2-label-item"><p class="g2-label-item-value">' + a.sales + 'kg</p></div>';
+        }
+      }).color('year', ['#7f8da9', '#fec514', '#db4c3c', '#daf0fd']);
+      // this.chart1.guide().text({
+      //   position:["0%","0%"],
+      //   content: '赛虹桥卫生服务中心'
+      // });
+      this.chart1.render();
+    },
+    // 初始化柱状图2
+    intChart2(data) {
+      if(this.chart3!==undefined){
+          this.chart3.changeData(data);
+          return 
+      }
+      this.chart3 = new G2.Chart({
+        container: "mountNode3",
+        forceFit: true,
+        height:300,
+        padding:'auto'
+      });
+      this.chart3.source(data);
+      this.chart3.legend(false);
+      // 自定义模板，自定义tooltip展示
+      this.chart3.tooltip({
+      itemTpl: '<li>总重量: {value}</li>',
+      position:'left'
+      });
+      this.chart3.interval().position("year*sales").opacity(1).label('value', {
+        useHtml: true,
+        htmlTemplate: function htmlTemplate(text, item) {
+          var a = item.point;
+          return '<span class="g2-label-item"><p class="g2-label-item-value">' + a.sales + 'kg</p></div>';
+        }
+      }).color('year', ['#7f8da9', '#fec514', '#db4c3c', '#daf0fd']);
+      // this.chart3.guide().text({
+      //   position:["0%","0%"],
+      //   content: '赛虹桥卫生服务中心'
+      // });
+      this.chart3.render();
+    },
+    // 表格选中
+    handleSelectionChange(val){
+       var arr=val.map((ele)=>{
+         return ele.id
+       })
+       this.chooseIds=arr;
+    },
+    // 导出报表
+    getExcel(type){
+      if(type==1){
+
+      }else if(type==2){
+        if(this.chooseIds.length==0){
+             this.$message({message:'请选择需要要导出明细的诊所！'});
+        }
+      }else{
+          this.$confirm('确定导出全部明细?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '导出成功!'
+            });
+          }).catch(() => {
+                 
+          });
+      }
+    },
+    // 合计
+     getSummaries(param) {
+       return ['','合计','111kg','11kg','12kg','0kg','0kg','0kg']
+     }
+  },
+  mounted() {
+     setTimeout(() => {
+           this.intChart1(this.data1);
+     }, 500);
+
+    var end = moment().format("YYYY-MM-DD"), start = moment().subtract(30, "days").format("YYYY-MM-DD");
+    this.date = [start, end];
+ 
+  }
+};
+</script>
+
+
+<style scoped>
+.cloudBox>div{
+    text-align: center;
+    box-sizing: border-box;
+    overflow: hidden;
+    min-height: 300px;
+    position: relative;
+}
+
+</style>
+<style>
+  .btitle{
+  font-size: 13px;
+}
+.g-guide{
+  left:50% !important;
+  transform: translateX(-50%);
+}
+</style>
+

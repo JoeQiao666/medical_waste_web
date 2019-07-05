@@ -45,6 +45,11 @@ export default new Router({
                     meta: { title: '溯源码申请' }
                 },
                 {
+                    path: '/codeAnalyze',
+                    component: resolve => require(['../components/page/codeAnalyze/codeAnalyze.vue'], resolve),
+                    meta: { title: '溯源码统计分析' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }
