@@ -6,7 +6,7 @@
           <i class="el-icon-location-outline"></i> 统计分析
         </el-breadcrumb-item>
         <el-breadcrumb-item>
-          科室统计
+          入库统计
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>

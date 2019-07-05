@@ -205,60 +205,6 @@ export default {
           sales: 38
         }
       ],
-      data3: [
-        {
-          year: "1951 年",
-          sales: 38
-        },
-        {
-          year: "1952 年",
-          sales: 52
-        },
-        {
-          year: "1956 年",
-          sales: 61
-        },
-        {
-          year: "1957 年",
-          sales: 145
-        },
-        {
-          year: "1958 年",
-          sales: 48
-        },
-        {
-          year: "1959 年",
-          sales: 38
-        },
-        {
-          year: "1960 年",
-          sales: 38
-        },
-        {
-          year: "1962 年",
-          sales: 38
-        },
-            {
-          year: "1983 年",
-          sales: 145
-        },
-        {
-          year: "1984 年",
-          sales: 48
-        },
-        {
-          year: "1985 年",
-          sales: 38
-        },
-        {
-          year: "1986年",
-          sales: 38
-        },
-        {
-          year: "1987 年",
-          sales: 38
-        }
-      ],
       tableData:[
         {id:1,name:'输液大厅',weight:'71.25',weight1:'21.25',weight2:'13.14',weight3:"",weight4:"",weight5:""},
       ],
@@ -352,38 +298,6 @@ export default {
       //   content: '赛虹桥卫生服务中心'
       // });
       this.chart1.render();
-    },
-    // 初始化柱状图2
-    intChart2(data) {
-      if(this.chart3!==undefined){
-          this.chart3.changeData(data);
-          return 
-      }
-      this.chart3 = new G2.Chart({
-        container: "mountNode3",
-        forceFit: true,
-        height:300,
-        padding:'auto'
-      });
-      this.chart3.source(data);
-      this.chart3.legend(false);
-      // 自定义模板，自定义tooltip展示
-      this.chart3.tooltip({
-      itemTpl: '<li>总重量: {value}</li>',
-      position:'left'
-      });
-      this.chart3.interval().position("year*sales").opacity(1).label('value', {
-        useHtml: true,
-        htmlTemplate: function htmlTemplate(text, item) {
-          var a = item.point;
-          return '<span class="g2-label-item"><p class="g2-label-item-value">' + a.sales + 'kg</p></div>';
-        }
-      }).color('year', ['#7f8da9', '#fec514', '#db4c3c', '#daf0fd']);
-      // this.chart3.guide().text({
-      //   position:["0%","0%"],
-      //   content: '赛虹桥卫生服务中心'
-      // });
-      this.chart3.render();
     },
     // 表格选中
     handleSelectionChange(val){

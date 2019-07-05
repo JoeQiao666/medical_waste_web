@@ -87,7 +87,7 @@
                             ]
                     },
                     {
-                        icon: require('../../assets/img/chart.png'),
+                        icon: require('../../assets/img/qrcode.png'),
                         index: '/traceCode',
                         title: '溯源码',
                         subs: [

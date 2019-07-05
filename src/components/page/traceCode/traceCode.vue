@@ -5,7 +5,7 @@
         <el-breadcrumb-item>
           <i class="el-icon-location-outline"></i> 统计分析
         </el-breadcrumb-item>
-        <el-breadcrumb-item>科室统计</el-breadcrumb-item>
+        <el-breadcrumb-item>溯源码申请</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="container">
