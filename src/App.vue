@@ -42,7 +42,7 @@ export default {
       text-overflow:ellipsis;
       white-space: nowrap;
     }
-    .el-date-editor{
+    /* .el-date-editor{
       background: #69B2DB;
     }
     .el-date-editor .el-range-input{
@@ -51,6 +51,6 @@ export default {
     }
     .el-date-editor .el-icon-date,.el-date-editor .el-range-separator{
       color: #fff;
-    }
+    } */
 
 </style>

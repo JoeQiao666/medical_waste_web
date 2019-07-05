@@ -73,6 +73,11 @@
                                 index: '/officeCount',
                                 icon: 'fa fa-dot-circle-o',
                                 title: '科室统计'
+                            },
+                            {
+                                index: '/putCount',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '入库统计'
                             }
                             ]
                     },

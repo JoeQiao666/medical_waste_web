@@ -30,6 +30,11 @@ export default new Router({
                     meta: { title: '科室统计' }
                 },
                 {
+                    path: '/putCount',
+                    component: resolve => require(['../components/page/putCount/putCount.vue'], resolve),
+                    meta: { title: '入库统计' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }
