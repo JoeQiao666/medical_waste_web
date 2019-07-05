@@ -1,7 +1,7 @@
 <template>
     <div class="login-wrap">
-        <div class="ms-login">
-            <div class="ms-title">艾德舆情平台</div>
+        <div class="ms-login" v-if="!findPass">
+            <div class="ms-title">医疗废物管理系统</div>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
                 <el-form-item prop="username">
                     <el-input v-model="ruleForm.username" placeholder="username">
@@ -16,6 +16,21 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </div>
+                <div class="pointer" @click="findPass = true" style="font-size:12px" >忘记密码?</div>
+            </el-form>
+        </div>
+        <div class="ms-login" v-if="findPass" > 
+            <div class="ms-title">找回密码</div>
+            <el-form :model="ruleForm" :rules="rules2" ref="ruleForms" label-width="0px" class="ms-content">
+                <el-form-item prop="email">
+                    <el-input v-model="ruleForm.email" placeholder="请输入邮箱">
+                        <el-button slot="prepend" icon="el-icon-takeaway-box"></el-button>
+                    </el-input>
+                </el-form-item>
+                <div class="login-btn">
+                    <el-button type="primary" @click="submitForms('ruleForm')">发送</el-button>
+                </div>
+                <div class="pointer" @click="findPass = false" style="font-size:12px" >直接登陆</div>
             </el-form>
         </div>
     </div>
@@ -25,9 +40,13 @@
     export default {
         data: function(){
             return {
+                findPass:false,
                 ruleForm: {
                     username: 'admin',
                     password: '123456'
+                },
+                ruleForms:{
+                    email:''
                 },
                 rules: {
                     username: [
@@ -36,6 +55,11 @@
                     password: [
                         { required: true, message: '请输入密码', trigger: 'blur' }
                     ]
+                },
+                rules2: {
+                    email: [
+                        { required: true, message: '请输入邮箱', trigger: 'blur' }
+                    ],
                 }
             }
         },
@@ -69,6 +93,9 @@
                         return false;
                     }
                 });
+            },
+            submitForms(formName){
+
             }
         }
     }

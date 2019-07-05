@@ -1,31 +1,52 @@
 <template>
-    <div class="header">
-        <div class="logo" @click="goIndex" >
-          <!-- <img src="../../assets/img/logo.png" alt=""> -->
-             医疗废物管理系统
-        </div>
-        <div class="header-right">
-            <div class="header-user-con">
-                <div style="    font-size: 17px;">{{cName}}</div>
-                <!-- 全屏显示 -->
-                <div class="btn-fullscreen" @click="handleFullScreen">
-                    <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
-                        <i class="el-icon-rank"></i>
-                    </el-tooltip>
+    <div>
+        <div class="header">
+            <div class="logo" @click="goIndex" >
+            <!-- <img src="../../assets/img/logo.png" alt=""> -->
+                医疗废物管理系统
+            </div>
+            <div class="header-right">
+                <div class="header-user-con">
+                    <div style="    font-size: 17px;">{{cName}}</div>
+                    <!-- 全屏显示 -->
+                    <div class="btn-fullscreen" @click="handleFullScreen">
+                        <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
+                            <i class="el-icon-rank"></i>
+                        </el-tooltip>
+                    </div>
+                    <!-- 用户头像 -->
+                    <div class="user-avator"><img src="../../assets/img/img.jpg"></div>
+                    <!-- 用户名下拉菜单 -->
+                    <el-dropdown class="user-name" trigger="click" @command="handleCommand">
+                        <span class="el-dropdown-link">
+                            {{username}} <i class="el-icon-caret-bottom"></i>
+                        </span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item divided  command="password">修改密码</el-dropdown-item>
+                            <el-dropdown-item divided  command="loginout">退出登录</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
                 </div>
-                <!-- 用户头像 -->
-                <div class="user-avator"><img src="../../assets/img/img.jpg"></div>
-                <!-- 用户名下拉菜单 -->
-                <el-dropdown class="user-name" trigger="click" @command="handleCommand">
-                    <span class="el-dropdown-link">
-                        {{username}} <i class="el-icon-caret-bottom"></i>
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item divided  command="loginout">退出登录</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
             </div>
         </div>
+         <!-- 编辑弹出框 -->
+        <el-dialog title="修改密码" :visible.sync="editVisible" width="35%"  >
+            <el-form ref="ruleForm"  :model="ruleForm"  :rules="rules" label-width="120px"   >
+                <el-form-item label="旧密码" prop="old" required>
+                    <el-input v-model="ruleForm.old" type="number" ></el-input>
+                </el-form-item>
+                <el-form-item label="新密码" prop="new1" required>
+                    <el-input v-model="ruleForm.new1"></el-input>
+                </el-form-item>
+                <el-form-item label="确认新密码" prop="new2" required>
+                    <el-input v-model="ruleForm.new2" type="number" ></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer"  >
+                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveEdit('ruleForm')">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -36,8 +57,25 @@
             return {
                 collapse: false,
                 fullscreen: false,
+                editVisible:false,
                 name: 'linxin',
-                cName:'赛虹桥社区卫生服务中心'
+                cName:'赛虹桥社区卫生服务中心',
+                ruleForm:{
+                    old:'',
+                    new1:'',
+                    new2:'',
+                },
+                rules: {
+                    old: [
+                        { required: true, message: '请输入旧密码' }
+                    ],
+                    new11: [
+                        { required: true, message: '请输入新密码' }
+                    ],
+                    new2: [
+                        { required: true, message: '请确认新密码' }
+                    ]
+                },
             }
         },
         computed:{
@@ -52,6 +90,8 @@
                 if(command == 'loginout'){
                     localStorage.removeItem('ms_username')
                     this.$router.push('/login');
+                }else if(command == 'password'){
+                    this.editVisible=true;
                 }
             },
             // 点击logo调回首页
@@ -89,6 +129,16 @@
                     }
                 }
                 this.fullscreen = !this.fullscreen;
+            },
+            // 保存编辑
+            saveEdit(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        // this.add()
+                    } else {
+                        return false;
+                    }
+                });
             },
         },
         mounted(){
