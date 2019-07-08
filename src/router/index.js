@@ -50,6 +50,11 @@ export default new Router({
                     meta: { title: '溯源码统计分析' }
                 },
                 {
+                    path: '/recycleList',
+                    component: resolve => require(['../components/page/recycleList/recycleList.vue'], resolve),
+                    meta: { title: '回收公司列表' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }

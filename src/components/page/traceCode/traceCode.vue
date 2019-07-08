@@ -61,7 +61,6 @@
             :data="tableData"
             style="width: 100%"
             v-loading="loading"
-            @selection-change="handleSelectionChange"
           >
           <el-table-column type="index" label="序号" width="55"></el-table-column>
           <el-table-column prop="count" sortable label="申请数量"></el-table-column>
@@ -91,7 +90,7 @@
                   <el-input v-model="ruleForm.name"></el-input>
             </el-form-item>
             <el-form-item label="申请人电话" prop="phone" required>
-                  <el-input v-model="ruleForm.phone" type="number" ></el-input>
+                  <el-input v-model="ruleForm.phone"  ></el-input>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer"  >

@@ -103,6 +103,18 @@
                             }
                             ]
                     },
+                    {
+                        icon: require('../../assets/img/user.png'),
+                        index: '/recycleList',
+                        title: '角色管理',
+                        subs: [
+                            {
+                                index: '/recycleList',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '回收公司列表'
+                            },
+                            ]
+                    },
                 ],
             }
         },

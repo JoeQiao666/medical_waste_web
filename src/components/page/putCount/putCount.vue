@@ -82,12 +82,16 @@
                 label="序号"
                 width="50">
               </el-table-column>
-                <el-table-column
+              <el-table-column
                 prop="time"
                 label="入库时间">
               </el-table-column>
+              <el-table-column
+                prop="count"
+                label="入库次数">
+              </el-table-column>
                 <el-table-column
-                prop="weight"
+                prop="count"
                 sortable
                 label="应入库总重量"
                 :formatter="formatter"
@@ -362,7 +366,7 @@ export default {
       cType:'day',
       type:'1',
       tableData:[
-        {id:1,time:'2017-03-12 10:55:55',weight:'71.25',weight1:'21.25',weight2:'13.14',weight3:"",weight4:"",weight5:""},
+        {id:1,time:'2017-03-12 10:55:55',count:'12',weight:'71.25',weight1:'21.25',weight2:'13.14',weight3:"",weight4:"",weight5:""},
       ],
       tableData3:[
         {id:1,time:'2017-03-12 10:55:55',name:'综合病区',weight:'4.48',type:'1',status:'1',p1:'回收员',p2:'江达生'},

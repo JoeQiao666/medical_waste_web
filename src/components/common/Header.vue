@@ -33,13 +33,13 @@
         <el-dialog title="修改密码" :visible.sync="editVisible" width="35%"  >
             <el-form ref="ruleForm"  :model="ruleForm"  :rules="rules" label-width="120px"   >
                 <el-form-item label="旧密码" prop="old" required>
-                    <el-input v-model="ruleForm.old" type="number" ></el-input>
+                    <el-input v-model="ruleForm.old"  ></el-input>
                 </el-form-item>
                 <el-form-item label="新密码" prop="new1" required>
                     <el-input v-model="ruleForm.new1"></el-input>
                 </el-form-item>
                 <el-form-item label="确认新密码" prop="new2" required>
-                    <el-input v-model="ruleForm.new2" type="number" ></el-input>
+                    <el-input v-model="ruleForm.new2"  ></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer"  >
