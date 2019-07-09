@@ -75,6 +75,11 @@ export default new Router({
                     meta: { title: '补操作' }
                 },
                 {
+                    path: '/unNormal',
+                    component: resolve => require(['../components/page/unNormal/unNormal.vue'], resolve),
+                    meta: { title: '异常记录' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }

@@ -3,37 +3,127 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-location-outline"></i> 统计分析
+          <i class="el-icon-location-outline"></i> 系统管理
         </el-breadcrumb-item>
         <el-breadcrumb-item>
-            总量统计
-        </el-breadcrumb-item>
+            补操作
+        </el-breadcrumb-item> 
       </el-breadcrumb>
     </div>
     <div class="container">
       <div v-loading="loading" >
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-          <el-tab-pane label="医废类" name="1">
+          <el-tab-pane label="补新增" name="1">
+               <el-form ref="ruleForm" class="new"  style="width:50%;margin:auto" :model="ruleForm"  :rules="rules" label-width="120px"   >
+                    <el-form-item label="科室：" prop="office" required>
+                         <el-select style="width:100%" v-model="ruleForm.office" placeholder="请选择科室">
+                            <el-option
+                              v-for="item in office"
+                              :key="item.id"
+                              :label="item.name"
+                              :value="item.id"
+                              >
+                            </el-option>
+                          </el-select>
+                    </el-form-item>
+                    <el-form-item label="重量(KG)" prop="weight" required>
+                          <el-input v-model="ruleForm.weight" type="number"  ></el-input>
+                    </el-form-item>
+                    <el-form-item label="类型：" prop="type" required>
+                         <el-select style="width:100%" v-model="ruleForm.type" placeholder="请选择类型">
+                            <el-option
+                              v-for="item in types"
+                              :key="item.id"
+                              :label="item.name"
+                              :value="item.id"
+                              >
+                            </el-option>
+                          </el-select>
+                    </el-form-item>
+                    <el-form-item label="产生时间" prop="time" required>
+                          <el-date-picker
+                            style="width:100%"
+                            v-model="ruleForm.time"
+                            value-format="yyyy-MM-dd"
+                            type="date"
+                            placeholder="选择日期">
+                          </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="回收员：" prop="p1" required>
+                         <el-select style="width:100%" v-model="ruleForm.p1" placeholder="请选择类型">
+                            <el-option
+                              v-for="item in types"
+                              :key="item.id"
+                              :label="item.name"
+                              :value="item.id"
+                              >
+                            </el-option>
+                          </el-select>
+                    </el-form-item>
+                    <el-form-item label="交接人：" prop="p2" required>
+                         <el-select style="width:100%" v-model="ruleForm.p2" placeholder="请选择类型">
+                            <el-option
+                              v-for="item in types"
+                              :key="item.id"
+                              :label="item.name"
+                              :value="item.id"
+                              >
+                            </el-option>
+                          </el-select>
+                    </el-form-item>
+               </el-form>
+               <el-button type="primary" style="margin:30px auto 0;display: block;" >确认新增</el-button>
           </el-tab-pane>
-          <el-tab-pane label="盐水瓶" name="2">
+          <el-tab-pane label="补入库" name="2">
+              <el-table
+              :data="tableData"
+              style="width: 100%"
+              v-loading="loading2"
+              @selection-change="handleSelectionChange"
+              >
+              <el-table-column
+               type="selection"
+               width="50">
+              </el-table-column>
+              <el-table-column
+                prop="time"
+                align="center"
+                label="产生时间">
+              </el-table-column>
+                <el-table-column
+                prop="type"
+                align="center"
+                sortable
+                label="类型"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="weight"
+                align="center"
+                sortable
+                label="重量"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="name"
+                align="center"
+                sortable
+                label="科室"
+              >
+              </el-table-column>
+         
+              </el-table>
+              <div class="pagination">
+                  <el-pagination background @current-change="handleCurrentChange" layout="total, prev, pager, next, jumper" :total="total">
+                  </el-pagination>
+              </div>
+
+              <div align="center" >
+                <el-button type="primary">全部入库</el-button>
+                <el-button type="primary">确认入库</el-button>
+              </div>
           </el-tab-pane>
         </el-tabs>
-          <div class="cloudBox" >
-              <div class="flex  headSelect" style="margin-bottom:50px;min-height:auto">
-                  <div class="flex ">
-                    <img class="titleIcon" src="../../../assets/img/day.png" alt="">
-                    <div>{{title}}</div>
-                  </div>
-              </div>
-              <div class="flex" style="align-items: normal;">
-                <div style="width:70%;height:calc(100vh - 368px)"   ref='box' >
-                  <div class="canvas"  v-show="data1.length>0" id="mountNode1"></div>
-                </div>
-                <div style="width:30%">
-                  <div class="canvas"  v-show="data2.length>0" id="mountNode2"></div>
-                </div>
-              </div>
-            </div>
       </div>
     </div>
   </div>
@@ -44,160 +134,70 @@ export default {
   data() {
     return {
       loading: false,
-      title:'近12月入库医废总量统计',
-      type:'1',
+      loading2: false,
       activeName: "1",
-      data1: [
-        {
-          year: "1951 年",
-          sales: 38
-        },
-        {
-          year: "1952 年",
-          sales: 52
-        },
-        {
-          year: "1956 年",
-          sales: 61
-        },
-        {
-          year: "1957 年",
-          sales: 145
-        },
-        {
-          year: "1958 年",
-          sales: 48
-        },
-        {
-          year: "1959 年",
-          sales: 38
-        },
-        {
-          year: "1960 年",
-          sales: 38
-        },
-        {
-          year: "1962 年",
-          sales: 38
-        },
-            {
-          year: "1983 年",
-          sales: 145
-        },
-        {
-          year: "1984 年",
-          sales: 48
-        },
-        {
-          year: "1985 年",
-          sales: 38
-        },
-        {
-          year: "1986年",
-          sales: 38
-        },
-        {
-          year: "1987 年",
-          sales: 38
-        }
-      ],
-      data2:[{
-        type: '感染性',
-        value: 7140
-      }, {
-        type: '损伤性',
-        value: 3875
-      }, {
-        type: '病理性',
-        value: 2267
-      }],
+      total:0,
+      cur_page:1,
+      chooseIds:[],
       tableData:[
-      
+       {id:1,time:'2018-01-12 10:12:11',type:'xx型',weight:12.11,name:'输液大厅'}
       ],
       total:0,
       cur_page:1,
+      office:[
+        {id:1,name:'输液大厅'}
+      ],
+      types:[
+        {id:1,name:'感染型'},
+        {id:2,name:'损伤型'},
+        {id:3,name:'病理型'},
+      ],
+      ruleForm:{
+          office:'',
+          weight:'',
+          type:'',
+          time:'',
+      },
+      rules: {
+        office: [
+            { required: true, message: '请选择科室' }
+        ],
+        weight: [
+            { required: true, message: '请输入重量' }
+        ],
+        type: [
+            { required: true, message: '请选择类型' }
+        ],
+        time: [
+            { required: true, message: '请输入时间' }
+        ],
+      }
     }
   },
   methods: {
     // 切换tab
     handleClick(tab, event) {
        if(tab.index==1){
-          this.type=2;
-          this.title='近12月入库盐水瓶总量统计';
+
        }else{
-          this.type=1;
-          this.title='近12月入库医废总量统计';
+       
+      
        }
-      this.intChart1(this.data1)
-      this.intBar1(this.data2)
     },
-    // 初始化柱状图
-    intChart1(data) {
-      if(this.chart1!==undefined){
-          this.chart1.changeData(data);
-          return 
-      }
-      this.chart1 = new G2.Chart({
-        container: "mountNode1",
-        forceFit: true,
-        height:this.$refs.box.offsetHeight,
-        padding:'auto'
-      });
-      this.chart1.source(data);
-      // 自定义模板，自定义tooltip展示
-      this.chart1.tooltip({
-      itemTpl: '<li>总重量: {value}</li>',
-      position:'left'
-      });
-      this.chart1.interval().position("year*sales");
-      this.chart1.render();
+     // 点击切换页码
+    handleCurrentChange(val){
+          this.cur_page = val;
+          // this.getTask();
     },
-    // 初始化饼图
-    intBar1(data){
-      var startAngle = -Math.PI / 2 - Math.PI / 4;
-      var ds = new DataSet();
-      var dv = ds.createView().source(data);
-        dv.transform({
-            type: 'percent',
-            field: 'value',
-            dimension: 'type',
-            as: 'percent'
-        });
-        if(this.chart2!==undefined){
-            this.chart2.changeData(dv);
-            return 
-        }
-        this.chart2 = new G2.Chart({
-            container: 'mountNode2',
-            forceFit: true,
-            height: this.$refs.box.offsetHeight,
-            padding: 'auto'
-        });
-        this.chart2.source(dv);
-        this.chart2.legend(true);
-        this.chart2.coord('theta', {
-            radius: 0.75,
-            innerRadius: 0.7,
-            startAngle: startAngle,
-            endAngle: startAngle + Math.PI * 2
-        });
-        this.chart2.intervalStack().position('value').color('type', [ '#00FF7F', '#46A3FC','#DC143C']).opacity(1).label('percent', {
-            formatter: function formatter(val,item) {
-              return item.point.type+':'+parseFloat(val * 100).toFixed(2) + '%';
-            }
-        }).select;
-        this.chart2.guide().html({
-          position: ['50%', '50%'],
-          html: '<div class="g2-guide-html"><p class="btitle">近12个月各类型占比</p></div>'
-        });
-        this.chart2.render();
-    },
+    handleSelectionChange(){
+       var arr=val.map((ele)=>{
+         return ele.id
+       })
+       this.chooseIds=arr;
+    }
   },
   mounted() {
-     setTimeout(() => {
-           this.intChart1(this.data1);
-           this.intBar1(this.data2);
-     }, 500);
+
  
   }
 };
@@ -205,22 +205,7 @@ export default {
 
 
 <style scoped>
-.cloudBox>div{
-    text-align: center;
-    box-sizing: border-box;
-    overflow: hidden;
-    min-height: 300px;
-    position: relative;
-}
-
+ .new /deep/ .el-form-item{
+   margin-bottom: 24px;
+ }
 </style>
-<style>
-  .btitle{
-  font-size: 13px;
-}
-.g-guide{
-  left:50% !important;
-  transform: translateX(-50%);
-}
-</style>
-

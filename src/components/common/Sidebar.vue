@@ -140,6 +140,11 @@
                                 icon: 'fa fa-dot-circle-o',
                                 title: '补操作'
                             },
+                            {
+                                index: '/unNormal',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '异常记录'
+                            },
                             ]
                     },
                 ],
