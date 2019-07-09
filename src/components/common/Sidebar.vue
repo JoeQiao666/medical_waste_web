@@ -131,7 +131,7 @@
                             ]
                     },
                     {
-                        icon: require('../../assets/img/user.png'),
+                        icon: require('../../assets/img/setting.png'),
                         index: '/operate',
                         title: '系统管理',
                         subs: [
@@ -144,6 +144,16 @@
                                 index: '/unNormal',
                                 icon: 'fa fa-dot-circle-o',
                                 title: '异常记录'
+                            },
+                            {
+                                index: '/carList',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '车辆管理'
+                            },
+                            {
+                                index: '/warnValue',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '警戒值'
                             },
                             ]
                     },

@@ -48,7 +48,13 @@
             label="操作人"
           >
           </el-table-column>
-      
+          <el-table-column
+                 label="操作"
+                 width="150" align="center">
+                 <template slot-scope="scope">
+                        <span class="pointer"  @click="detials(scope.$index, scope.row)">查看详情</span>
+                 </template>
+          </el-table-column>
           </el-table>
           <div class="pagination">
               <el-pagination background @current-change="handleCurrentChange" layout="total, prev, pager, next, jumper" :total="total">
@@ -56,6 +62,15 @@
           </div>
 
     </div>
+
+      <!-- 详情弹出框 -->
+    <el-dialog title="导入科室" :visible.sync="visible" width="40%"  >
+        <el-form   label-width="120px"  >
+            <el-form-item label="文件："  >
+                 <el-input value="detail" ></el-input>
+            </el-form-item>
+        </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -64,13 +79,15 @@ export default {
   data() {
     return {
       loading: false,
+      visible: false,
       total:0,
       cur_page:1,
       tableData:[
-       {id:1,time:'2018-01-12 10:12:11',type:'xx型',weight:12.11,name:'输液大厅',status:1}
+       {id:1,time:'2018-01-12 10:12:11',type:'xx型',weight:12.11,name:'输液大厅',status:1,detail:'12123123123'}
       ],
       total:0,
       cur_page:1,
+      detail:''
     }
   },
   methods: {
@@ -87,6 +104,10 @@ export default {
         is='未确认'
       }
       return is
+    },
+    detials(index,row){
+      this.detail=row.detail;
+      this.visible=true;
     }
   },
   mounted() {

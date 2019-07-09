@@ -80,6 +80,16 @@ export default new Router({
                     meta: { title: '异常记录' }
                 },
                 {
+                    path: '/carList',
+                    component: resolve => require(['../components/page/carList/carList.vue'], resolve),
+                    meta: { title: '车辆管理' }
+                },
+                {
+                    path: '/warnValue',
+                    component: resolve => require(['../components/page/warnValue/warnValue.vue'], resolve),
+                    meta: { title: '警戒值' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }
