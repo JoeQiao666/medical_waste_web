@@ -88,11 +88,26 @@
             // 用户名下拉菜单选择事件
             handleCommand(command) {
                 if(command == 'loginout'){
-                    localStorage.removeItem('ms_username')
-                    this.$router.push('/login');
+                    localStorage.removeItem('ms_username');
+                    this.logOut();
                 }else if(command == 'password'){
                     this.editVisible=true;
                 }
+            },
+            logOut(){
+                this.$axios({
+                    method:'post',
+                    url:'/platform/login/logout',
+                }).then((response) =>{    
+                    if(response.data.code==0){
+                       this.$router.push('/login');
+                    }else{
+                        this.$message.error(response.data.msg);
+                    }     
+                    
+                }).catch((error) =>{
+                    console.log(error)    
+                })
             },
             // 点击logo调回首页
             goIndex(){

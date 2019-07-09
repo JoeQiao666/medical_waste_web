@@ -113,6 +113,16 @@
                                 icon: 'fa fa-dot-circle-o',
                                 title: '回收公司列表'
                             },
+                            {
+                                index: '/jobList',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '岗位列表'
+                            },
+                            {
+                                index: '/officeEdit',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '科室编辑'
+                            },
                             ]
                     },
                 ],

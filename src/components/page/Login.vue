@@ -37,13 +37,14 @@
 </template>
 
 <script>
+   
     export default {
         data: function(){
             return {
                 findPass:false,
                 ruleForm: {
-                    username: 'admin',
-                    password: '123456'
+                    username: 'superadmin',
+                    password: '1'
                 },
                 ruleForms:{
                     email:''
@@ -70,15 +71,15 @@
                     if (valid) {
                            this.$axios({
                                 method:'post',
-                                url:'/api/user/login',
-                                data:{ 
+                                url:'/platform/login/doLogin',
+                                data:this.$qs.stringify({ 
                                     username:this.ruleForm.username,
                                     password:this.ruleForm.password
-                                }
+                                })
                             }).then((response) =>{    
-                                if(response.data.code==200){
+                                if(response.data.code==0){
                                     localStorage.setItem('ms_username',this.ruleForm.username);
-                                    localStorage.setItem('token',response.data.data);
+                                    // localStorage.setItem('token',response.data.data);
                                     this.$router.push('/');
                                 }else{
                                     this.$message.error(response.data.msg);

@@ -10,12 +10,12 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api':{
-        target:"http://adsage.shidaitech.com",//设置你调用的接口域名和端口号 别忘了加http
+      '/platform':{
+        target:"http://47.88.171.244:8080",//设置你调用的接口域名和端口号 别忘了加http
         changeOrigin:true,
-        pathRewrite:{
-            '^/api':'/api'
-        }
+        // pathRewrite:{
+        //     '^/platform':'/platform'
+        // }
       },
       
     },

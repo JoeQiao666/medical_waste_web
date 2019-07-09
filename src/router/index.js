@@ -55,6 +55,16 @@ export default new Router({
                     meta: { title: '回收公司列表' }
                 },
                 {
+                    path: '/jobList',
+                    component: resolve => require(['../components/page/jobList/jobList.vue'], resolve),
+                    meta: { title: '岗位列表' }
+                },
+                {
+                    path: '/officeEdit',
+                    component: resolve => require(['../components/page/officeEdit/officeEdit.vue'], resolve),
+                    meta: { title: '科室编辑' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }
