@@ -123,6 +123,23 @@
                                 icon: 'fa fa-dot-circle-o',
                                 title: '科室编辑'
                             },
+                            {
+                                index: '/personEdit',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '人员编辑'
+                            },
+                            ]
+                    },
+                    {
+                        icon: require('../../assets/img/user.png'),
+                        index: '/operate',
+                        title: '系统管理',
+                        subs: [
+                            {
+                                index: '/operate',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '补操作'
+                            },
                             ]
                     },
                 ],

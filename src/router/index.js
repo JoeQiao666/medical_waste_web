@@ -65,6 +65,16 @@ export default new Router({
                     meta: { title: '科室编辑' }
                 },
                 {
+                    path: '/personEdit',
+                    component: resolve => require(['../components/page/personEdit/personEdit.vue'], resolve),
+                    meta: { title: '人员编辑' }
+                },
+                {
+                    path: '/operate',
+                    component: resolve => require(['../components/page/operate/operate.vue'], resolve),
+                    meta: { title: '补操作' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }
