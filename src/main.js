@@ -33,10 +33,7 @@ Vue.prototype.$qs = qs;
 
 axios.interceptors.request.use( 
     config => { 
-var xtoken = localStorage.getItem('token');
-if(xtoken != null){ 
-            config.headers.Authorization= xtoken;
-        } 
+    config.headers['X-Requested-With']='XMLHttpRequest';
 return config 
     },function(error){ 
 return Promise.reject(error) 
@@ -44,8 +41,7 @@ return Promise.reject(error)
 ) 
 axios.interceptors.response.use(function (response) { 
 // token 已过期，重定向到登录页面
-if (response.data.code == 1001){ 
-    localStorage.clear() 
+if (response.data.msg == '登录失效'){ 
     router.replace({ 
                     path: '/login', 
                 }) 

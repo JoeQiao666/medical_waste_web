@@ -8,14 +8,14 @@
       </el-breadcrumb>
     </div>
     <div class="container">
-      <div v-loading="loading" >
+      <div  >
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
           <el-tab-pane label="医废类" name="1">
           </el-tab-pane>
           <el-tab-pane label="盐水瓶" name="2">
           </el-tab-pane>
         </el-tabs>
-         <div class="cloudBox" >
+         <div class="cloudBox" v-loading="loading" >
               <div class="flex  headSelect" style="margin-bottom:50px;min-height:auto">
                   <div class="flex ">
                     <img class="titleIcon" src="../../../assets/img/day.png" alt="">
@@ -24,10 +24,10 @@
               </div>
               <div class="flex" style="align-items: normal;">
                 <div style="width:70%">
-                  <div class="canvas"  v-show="data1.length>0" id="mountNode1"></div>
+                  <div class="canvas"   id="mountNode1"></div>
                 </div>
                 <div style="width:30%">
-                  <div class="canvas"  v-show="data2.length>0" id="mountNode2"></div>
+                  <div class="canvas"   id="mountNode2"></div>
                 </div>
               </div>
          </div>
@@ -55,7 +55,7 @@
                 width="100">
               </el-table-column>
                 <el-table-column
-                prop="name"
+                prop="departmentName"
                 label="科室">
               </el-table-column>
                 <el-table-column
@@ -65,7 +65,7 @@
               >
               </el-table-column>
               <el-table-column
-                prop="type"
+                prop="typeName"
                 sortable
                 label="类型"
               >
@@ -74,22 +74,17 @@
               <el-table-column
                 prop="status"
                 label="记录状态"
-                sortable
                 :formatter="formatter"
                 >
               </el-table-column>
               <el-table-column
-                prop="p1"
+                prop="operatorName"
                 label="操作人"
-                sortable
-                :formatter="formatter"
                 >
               </el-table-column>
               <el-table-column
-                prop="p2"
+                prop="staffName"
                 label="交接人"
-                sortable
-                :formatter="formatter"
                 >
               </el-table-column>
             </el-table>
@@ -111,60 +106,7 @@ export default {
       type:'1',
       loading2: false,
       activeName: "1",
-      data1: [
-        {
-          year: "1951 年",
-          sales: 38
-        },
-        {
-          year: "1952 年",
-          sales: 52
-        },
-        {
-          year: "1956 年",
-          sales: 61
-        },
-        {
-          year: "1957 年",
-          sales: 145
-        },
-        {
-          year: "1958 年",
-          sales: 48
-        },
-        {
-          year: "1959 年",
-          sales: 38
-        },
-        {
-          year: "1960 年",
-          sales: 38
-        },
-        {
-          year: "1962 年",
-          sales: 38
-        },
-            {
-          year: "1983 年",
-          sales: 145
-        },
-        {
-          year: "1984 年",
-          sales: 48
-        },
-        {
-          year: "1985 年",
-          sales: 38
-        },
-        {
-          year: "1986年",
-          sales: 38
-        },
-        {
-          year: "1987 年",
-          sales: 38
-        }
-      ],
+      data1: [],
       data2:[{
         type: '感染性',
         value: 7140
@@ -187,9 +129,11 @@ export default {
     formatter(row, column) {
               var is='';
               if(row.status==0){
-                  is='激活';
+                  is='科室出库';
+              }else if(row.status==1){
+                  is='暂存点入库';
               }else{
-                  is='关闭';
+                  is='暂存点出库';
               }
               return is;
     },
@@ -207,9 +151,9 @@ export default {
            this.type=1;
            this.title='近30天回收医废总重量';
        }
-
-      this.intChart1(this.data1);
-      this.intBar1(this.data2);
+       this.getData()
+       this.getPercent()
+       this.getToday()
     },
     // 初始化柱状图
     intChart1(data) {
@@ -229,7 +173,7 @@ export default {
       itemTpl: '<li>总重量: {value}</li>',
       position:'left'
       });
-      this.chart1.interval().position("year*sales");
+      this.chart1.interval().position("date*weight");
       this.chart1.render();
     },
     // 初始化饼图
@@ -266,17 +210,92 @@ export default {
               return item.point.type+':'+parseFloat(val * 100).toFixed(2) + '%';
             }
         }).select;
+        this.chart2.tooltip({
+            itemTpl: '<li>{name} : {value}%</li>',
+            crosshairs: {
+            type: 'line'
+            },
+            showTitle: false
+        });
         this.chart2.guide().html({
           position: ['50%', '50%'],
           html: '<div class="g2-guide-html"><p class="btitle">近30天各类型占比</p></div>'
         });
         this.chart2.render();
     },
+    // 近30天回收医废总重量
+    getData(){
+        this.loading=true;
+        var url='';
+        this.activeName==1?url='/platform/hospital/rubbish/weightPerDayInLastMonth?isBottle=false':url='/platform/hospital/rubbish/weightPerDayInLastMonth?isBottle=true';
+        this.$axios({
+            method:'get',
+            url:url,
+        }).then((res) =>{
+          console.log(res.data)
+            if(res.status==200){
+               this.loading=false;
+               var arr=res.data.map((ele)=>{
+                 return {date:' '+ele.date,weight:ele.weight}
+               })
+               this.intChart1(arr)
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
+    // 近30天各类型占比
+    getPercent(){
+        this.loading=true;
+        var url='';
+        this.activeName==1?url='/platform/hospital/rubbish/percentInLastMonth?isBottle=false':url='/platform/hospital/rubbish/percentInLastMonth?isBottle=true';
+        this.$axios({
+            method:'get',
+            url:url,
+        }).then((res) =>{
+          console.log(res.data)
+            if(res.status==200){
+               this.loading=false;
+               var arr=res.data.map((ele)=>{
+                 return {value:ele.percent,type:ele.name}
+               })
+               this.intBar1(arr)
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
+    // 今日医疗废物运转记录
+    getToday(){
+        this.loading2=true;
+        var url='';
+        this.activeName==1?url='/platform/hospital/rubbish/listPage?isBottle=false&pageNumber='+this.cur_page+'&pageSize=10':url='/platform/hospital/rubbish/listPage?isBottle=true&pageNumber='+this.cur_page+'&pageSize=10'
+        this.$axios({
+            method:'get',
+            url:url,
+        }).then((res) =>{
+            if(res.status==200){
+               this.loading2=false;
+               this.tableData=res.data.list;
+               this.total=res.data.totalCount;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
   },
+  
   mounted() {
      setTimeout(() => {
-           this.intChart1(this.data1);
-           this.intBar1(this.data2);
+           this.getData()
+           this.getPercent()
+           this.getToday()
      }, 500);
  
   }

@@ -27,10 +27,10 @@
               </div>
               <div class="flex" style="align-items: normal;">
                 <div style="width:70%;height:calc(100vh - 368px)"   ref='box' >
-                  <div class="canvas"  v-show="data1.length>0" id="mountNode1"></div>
+                  <div class="canvas"  id="mountNode1"></div>
                 </div>
                 <div style="width:30%">
-                  <div class="canvas"  v-show="data2.length>0" id="mountNode2"></div>
+                  <div class="canvas"  id="mountNode2"></div>
                 </div>
               </div>
             </div>
@@ -48,74 +48,9 @@ export default {
       type:'1',
       activeName: "1",
       data1: [
-        {
-          year: "1951 年",
-          sales: 38
-        },
-        {
-          year: "1952 年",
-          sales: 52
-        },
-        {
-          year: "1956 年",
-          sales: 61
-        },
-        {
-          year: "1957 年",
-          sales: 145
-        },
-        {
-          year: "1958 年",
-          sales: 48
-        },
-        {
-          year: "1959 年",
-          sales: 38
-        },
-        {
-          year: "1960 年",
-          sales: 38
-        },
-        {
-          year: "1962 年",
-          sales: 38
-        },
-            {
-          year: "1983 年",
-          sales: 145
-        },
-        {
-          year: "1984 年",
-          sales: 48
-        },
-        {
-          year: "1985 年",
-          sales: 38
-        },
-        {
-          year: "1986年",
-          sales: 38
-        },
-        {
-          year: "1987 年",
-          sales: 38
-        }
-      ],
-      data2:[{
-        type: '感染性',
-        value: 7140
-      }, {
-        type: '损伤性',
-        value: 3875
-      }, {
-        type: '病理性',
-        value: 2267
-      }],
-      tableData:[
       
       ],
-      total:0,
-      cur_page:1,
+      data2:[],
     }
   },
   methods: {
@@ -128,8 +63,8 @@ export default {
           this.type=1;
           this.title='近12月入库医废总量统计';
        }
-      this.intChart1(this.data1)
-      this.intBar1(this.data2)
+       this.getData()
+       this.getPercent()
     },
     // 初始化柱状图
     intChart1(data) {
@@ -149,7 +84,7 @@ export default {
       itemTpl: '<li>总重量: {value}</li>',
       position:'left'
       });
-      this.chart1.interval().position("year*sales");
+      this.chart1.interval().position("date*weight");
       this.chart1.render();
     },
     // 初始化饼图
@@ -181,22 +116,73 @@ export default {
             startAngle: startAngle,
             endAngle: startAngle + Math.PI * 2
         });
-        this.chart2.intervalStack().position('value').color('type', [ '#00FF7F', '#46A3FC','#DC143C']).opacity(1).label('percent', {
+       this.chart2.intervalStack().position('value').color('type', [ '#00FF7F', '#46A3FC','#DC143C']).opacity(1).label('percent', {
             formatter: function formatter(val,item) {
               return item.point.type+':'+parseFloat(val * 100).toFixed(2) + '%';
             }
         }).select;
+        this.chart2.tooltip({
+            itemTpl: '<li>{name} : {value}%</li>',
+            crosshairs: {
+            type: 'line'
+            },
+            showTitle: false
+        });
         this.chart2.guide().html({
           position: ['50%', '50%'],
           html: '<div class="g2-guide-html"><p class="btitle">近12个月各类型占比</p></div>'
         });
         this.chart2.render();
     },
+     // 近近12个月回收医废总重量
+    getData(){
+        this.loading=true;
+        var url='';
+        this.activeName==1?url='/platform/hospital/rubbish/weightPerMonthInLastYear?isBottle=false':url='/platform/hospital/rubbish/weightPerMonthInLastYear?isBottle=true';
+        this.$axios({
+            method:'get',
+            url:url,
+        }).then((res) =>{
+            if(res.status==200){
+               this.loading=false;
+               var arr=res.data.map((ele)=>{
+                 return {date:ele.date,weight:ele.weight}
+               })
+               this.intChart1(arr)
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
+    // 近近12个月各类型占比
+    getPercent(){
+        this.loading=true;
+        var url='';
+        this.activeName==1?url='/platform/hospital/rubbish/percentInLastYear?isBottle=false':url='/platform/hospital/rubbish/percentInLastYear?isBottle=true';
+        this.$axios({
+            method:'get',
+            url:url,
+        }).then((res) =>{
+            if(res.status==200){
+               this.loading=false;
+               var arr=res.data.map((ele)=>{
+                 return {value:ele.percent,type:ele.name}
+               })
+               this.intBar1(arr)
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
   },
   mounted() {
      setTimeout(() => {
-           this.intChart1(this.data1);
-           this.intBar1(this.data2);
+           this.getData()
+           this.getPercent()
      }, 500);
  
   }

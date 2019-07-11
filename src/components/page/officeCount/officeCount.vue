@@ -28,7 +28,7 @@
               <div class="flex" style="align-items: normal;">
                 <div style="width:100%">
                   <div align="left" style="font-size:14px" >赛虹桥卫生服务中心</div>
-                  <div class="canvas"  v-show="data1.length>0" id="mountNode1"></div>
+                  <div class="canvas"  id="mountNode1"></div>
                 </div>
               </div>
         </div>
@@ -149,61 +149,9 @@ export default {
       title:'近30天各科室产生医废总量',
       type:'1',
       activeName: "1",
-      kName: "",
+      kName: null,
       date:'',
       data1: [
-        {
-          year: "输液大厅",
-          sales: 38
-        },
-        {
-          year: "急诊（门诊）",
-          sales: 52
-        },
-        {
-          year: "1956 年",
-          sales: 61
-        },
-        {
-          year: "1957 年",
-          sales: 145
-        },
-        {
-          year: "1958 年",
-          sales: 48
-        },
-        {
-          year: "1959 年",
-          sales: 38
-        },
-        {
-          year: "1960 年",
-          sales: 38
-        },
-        {
-          year: "1962 年",
-          sales: 38
-        },
-            {
-          year: "1983 年",
-          sales: 145
-        },
-        {
-          year: "1984 年",
-          sales: 48
-        },
-        {
-          year: "1985 年",
-          sales: 38
-        },
-        {
-          year: "1986年",
-          sales: 38
-        },
-        {
-          year: "1987 年",
-          sales: 38
-        }
       ],
       tableData:[
         {id:1,name:'输液大厅',weight:'71.25',weight1:'21.25',weight2:'13.14',weight3:"",weight4:"",weight5:""},
@@ -265,7 +213,7 @@ export default {
          this.type=1;
          this.title='近30天各科室产生医废总量';
        }
-          this.intChart1(this.data1)
+        this.getData();
     },
     // 初始化柱状图
     intChart1(data) {
@@ -286,17 +234,13 @@ export default {
       itemTpl: '<li>总重量: {value}</li>',
       position:'left'
       });
-      this.chart1.interval().position("year*sales").opacity(1).label('value', {
+      this.chart1.interval().position("departmentName*total").opacity(1).label('value', {
         useHtml: true,
         htmlTemplate: function htmlTemplate(text, item) {
           var a = item.point;
-          return '<span class="g2-label-item"><p class="g2-label-item-value">' + a.sales + 'kg</p></div>';
+          return '<span class="g2-label-item"><p class="g2-label-item-value">' + a.total + 'kg</p></div>';
         }
-      }).color('year', ['#7f8da9', '#fec514', '#db4c3c', '#daf0fd']);
-      // this.chart1.guide().text({
-      //   position:["0%","0%"],
-      //   content: '赛虹桥卫生服务中心'
-      // });
+      }).color('departmentName', ['#7f8da9', '#fec514', '#db4c3c', '#daf0fd']);
       this.chart1.render();
     },
     // 表格选中
@@ -332,16 +276,55 @@ export default {
     // 合计
      getSummaries(param) {
        return ['','合计','111kg','11kg','12kg','0kg','0kg','0kg']
-     }
+     },
+     getData(){
+        this.loading=true;
+        var url='';
+        this.activeName==1?url='/platform/hospital/rubbish/weightPerDayInLastMonthByDepartment?isBottle=false':url='/platform/hospital/rubbish/weightPerDayInLastMonthByDepartment?isBottle=true';
+        this.$axios({
+            method:'get',
+            url:url,
+        }).then((res) =>{
+          console.log(res.data)
+            if(res.status==200){
+               this.loading=false;
+               this.intChart1(res.data)
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
+    // 各科室重量统计
+    getTable(){
+        this.loading2=true;
+        var url='';
+        this.activeName==1?url='/platform/hospital/rubbish/weightPerDayByDepartment?start='+ this.date[0]+'&end='+this.date[1]+'0&name='+this.kName+'&pageNumber='+this.cur_page+'&pageSize=10&isBottle=false':url='/platform/hospital/rubbish/weightPerDayByDepartment?start='+ this.date[0]+'&end='+this.date[1]+'0&name='+this.kName+'&pageNumber='+this.cur_page+'&pageSize=10&isBottle=true';
+        this.$axios({
+            method:'get',
+            url:url,
+        }).then((res) =>{
+            if(res.status==200){
+               this.loading2=false;
+               this.tableData=res.data.list;
+               this.total=res.data.totalCount;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
   },
   mounted() {
+     var end = moment().format("YYYY-MM-DD"), start = moment().subtract(30, "days").format("YYYY-MM-DD");
+     this.date = [start, end];
      setTimeout(() => {
-           this.intChart1(this.data1);
+           this.getData();
+           this.getTable();
      }, 500);
 
-    var end = moment().format("YYYY-MM-DD"), start = moment().subtract(30, "days").format("YYYY-MM-DD");
-    this.date = [start, end];
- 
   }
 };
 </script>
