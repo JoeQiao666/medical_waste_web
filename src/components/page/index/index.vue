@@ -49,10 +49,10 @@
                 width="80">
               </el-table-column>
               <el-table-column
-                prop="createTime"
+                prop="createdTime"
                 sortable
                 label="新增时间"
-                width="100">
+                width="160">
               </el-table-column>
                 <el-table-column
                 prop="departmentName"
@@ -140,7 +140,7 @@ export default {
     // 点击切换页码
     handleCurrentChange(val){
           this.cur_page = val;
-          // this.getTask();
+          this.getToday();
     },
     // 切换tab
     handleClick(tab, event) {

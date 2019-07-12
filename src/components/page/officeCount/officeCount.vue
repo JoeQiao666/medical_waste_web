@@ -54,10 +54,10 @@
                               </el-date-picker>
                         </div>
                         <div class="flex" style="margin-left:10px">
-                          <span class="demonstration" style="width:86px">科室名称：</span>
+                          <span class="demonstration" style="width:66px">科室名称：</span>
                           <el-input style="width:140px" v-model="kName" placeholder="请输入科室名称"></el-input>
                         </div >
-                        <el-button style="margin-left:10px" type="primary" icon="el-icon-search">搜索</el-button>
+                        <el-button style="margin-left:10px" @click="getTable" type="primary" icon="el-icon-search">搜索</el-button>
                         <el-dropdown @command="getExcel">
                             <el-button type="primary" style="margin-left:10px" >
                               导出报表<i class="el-icon-arrow-down el-icon--right"></i>
@@ -83,51 +83,24 @@
                 width="55">
               </el-table-column>
                 <el-table-column
-                prop="name"
+                prop="departmentName"
                 label="科室">
               </el-table-column>
                 <el-table-column
-                prop="weight"
+                prop="total"
                 sortable
                 label="总重量"
                 :formatter="formatter"
               >
               </el-table-column>
               <el-table-column
-                prop="weight1"
-                sortable
-                label="感染类总重量"
-                :formatter="formatter"
-              >
-              </el-table-column>
-            
-              <el-table-column
-                prop="weight2"
-                label="损伤类总重量"
-                sortable
-                :formatter="formatter"
-                >
-              </el-table-column>
-              <el-table-column
-                prop="weight3"
-                label="病理类总重量"
-                sortable
-                :formatter="formatter"
-                >
-              </el-table-column>
-              <el-table-column
-                prop="weight4"
-                label="药物类总重量"
-                sortable
-                :formatter="formatter"
-                >
-              </el-table-column>
-              <el-table-column
-                prop="weight5"
-                label="化学类总重量"
-                sortable
-                :formatter="formatter"
-                >
+                    :prop="item"
+                    sortable
+                    :label="item"
+                    :formatter="formatter"
+                    v-for="(item,ind) in columns"
+                    :key="ind"
+                  >
               </el-table-column>
           </el-table>
           <div class="pagination">
@@ -149,8 +122,9 @@ export default {
       title:'近30天各科室产生医废总量',
       type:'1',
       activeName: "1",
-      kName: null,
+      kName: '',
       date:'',
+      columns:[],
       data1: [
       ],
       tableData:[
@@ -202,7 +176,7 @@ export default {
     // 点击切换页码
     handleCurrentChange(val){
           this.cur_page = val;
-          // this.getTask();
+          this.getTable();
     },
     // 切换tab
     handleClick(tab, event) {
@@ -214,6 +188,7 @@ export default {
          this.title='近30天各科室产生医废总量';
        }
         this.getData();
+        this.getTable();
     },
     // 初始化柱状图
     intChart1(data) {
@@ -275,7 +250,31 @@ export default {
     },
     // 合计
      getSummaries(param) {
-       return ['','合计','111kg','11kg','12kg','0kg','0kg','0kg']
+      const { columns, data } = param;
+        const sums = [];
+        columns.forEach((column, index) => {
+          if (index === 0) {
+            sums[index] = '';
+            return;
+          }else if (index === 1) {
+            sums[index] = '总价';
+            return;
+          }
+          const values = data.map(item => Number(item[column.property]));
+          if (!values.every(value => isNaN(value))) {
+            sums[index] = values.reduce((prev, curr) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                return prev + curr;
+              } else {
+                return prev;
+              }
+            }, 0);
+            sums[index] += ' kg';
+          } 
+        });
+
+        return sums;
      },
      getData(){
         this.loading=true;
@@ -285,7 +284,6 @@ export default {
             method:'get',
             url:url,
         }).then((res) =>{
-          console.log(res.data)
             if(res.status==200){
                this.loading=false;
                this.intChart1(res.data)
@@ -300,14 +298,31 @@ export default {
     getTable(){
         this.loading2=true;
         var url='';
-        this.activeName==1?url='/platform/hospital/rubbish/weightPerDayByDepartment?start='+ this.date[0]+'&end='+this.date[1]+'0&name='+this.kName+'&pageNumber='+this.cur_page+'&pageSize=10&isBottle=false':url='/platform/hospital/rubbish/weightPerDayByDepartment?start='+ this.date[0]+'&end='+this.date[1]+'0&name='+this.kName+'&pageNumber='+this.cur_page+'&pageSize=10&isBottle=true';
+        this.activeName==1?url='/platform/hospital/rubbish/weightPerDayByDepartment?start='+ this.date[0]+'&end='+this.date[1]+'&name='+this.kName+'&pageNumber='+this.cur_page+'&pageSize=10&isBottle=false':url='/platform/hospital/rubbish/weightPerDayByDepartment?start='+ this.date[0]+'&end='+this.date[1]+'&name='+this.kName+'&pageNumber='+this.cur_page+'&pageSize=10&isBottle=true';
         this.$axios({
             method:'get',
             url:url,
         }).then((res) =>{
             if(res.status==200){
                this.loading2=false;
-               this.tableData=res.data.list;
+              // 声明表格头
+               var columns=[];
+              //  表格数据处理
+               var arr=res.data.list.map((ele,ind1)=>{
+                 var obj={departmentName:ele.departmentName,total:ele.total};
+                 ele.typeNames=ele.typeNames.split(',');
+                 ele.totals=ele.totals.split(',');
+                 ele.typeNames.forEach((ele1,ind)=>{
+                     obj[ele1]= parseFloat(ele.totals[ind]);
+                     if(ind1==0){
+                      columns.push(ele1)
+                     }
+                 })
+                 return  obj
+               })
+              //  动态表格头
+               this.columns=columns;
+               this.tableData=arr;
                this.total=res.data.totalCount;
             }else{
                 this.$message.error(res.data.msg);

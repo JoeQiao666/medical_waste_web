@@ -444,7 +444,7 @@ export default {
     // 点击切换页码
     handleCurrentChange(val){
           this.cur_page = val;
-          // this.getTask();
+          this.getTable();
     },
     // 点击切换页码二级
     handleCurrentChange1(val){
@@ -463,6 +463,7 @@ export default {
        }else{
           this.type=1;
        }
+       this.getTable();
     },
     // 表格选中
     handleSelectionChange(val){
@@ -527,11 +528,32 @@ export default {
     // 保存编辑
     saveEdit(){
      this.editVisible=false;
-    }
+    },
+    // 入库统计
+    getTable(){
+        this.loading=true;
+        var url='';
+        this.activeName==1?url='/platform/hospital/rubbish/weightPerType?formatType='+this.cType+'&start='+ this.date[0]+'&end='+this.date[1]+'&isBottle=false&status=1&pageNumber='+this.cur_page+'&pageSize=10':url='/platform/hospital/rubbish/weightPerType?formatType='+this.cType+'&start='+ this.date[0]+'&end='+this.date[1]+'&isBottle=true&status=1&pageNumber='+this.cur_page+'&pageSize=10';
+        this.$axios({
+            method:'get',
+            url:url,
+        }).then((res) =>{
+            if(res.status==200){
+               this.loading=false;
+               this.tableData=res.data.list;
+               this.total=res.data.totalCount;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
   },
   mounted() {
      var end=moment().format('YYYY-MM-DD'),start=moment().subtract(30, 'days').format('YYYY-MM-DD');
      this.date=[start,end];
+     this.getTable();
   }
 };
 </script>
