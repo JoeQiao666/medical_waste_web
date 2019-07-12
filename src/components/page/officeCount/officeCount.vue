@@ -250,14 +250,14 @@ export default {
     },
     // 合计
      getSummaries(param) {
-      const { columns, data } = param;
+        const { columns, data } = param;
         const sums = [];
         columns.forEach((column, index) => {
           if (index === 0) {
             sums[index] = '';
             return;
           }else if (index === 1) {
-            sums[index] = '总价';
+            sums[index] = '合计';
             return;
           }
           const values = data.map(item => Number(item[column.property]));
