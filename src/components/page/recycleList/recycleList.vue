@@ -23,7 +23,7 @@
             </div>
             <el-button
               style="margin-left:10px"
-              @click="search"
+              @click="getData"
               type="primary"
               icon="el-icon-search"
             >搜索</el-button>
@@ -41,10 +41,10 @@
             v-loading="loading"
           >
           <el-table-column type="index" label="序号" width="55"></el-table-column>
-          <el-table-column prop="cName"  label="回收公司名称"></el-table-column>
-          <el-table-column prop="phone1"  label="回收公司电话" width="150px" ></el-table-column>
-          <el-table-column prop="name"  label="负责人姓名" width="140px" ></el-table-column>
-          <el-table-column prop="phone2" label="负责人电话" width="140px"  ></el-table-column>
+          <el-table-column prop="name"  label="回收公司名称"></el-table-column>
+          <el-table-column prop="telephone"  label="回收公司电话" width="150px" ></el-table-column>
+          <el-table-column prop="chargeName"  label="负责人姓名" width="140px" ></el-table-column>
+          <el-table-column prop="chargePhone" label="负责人电话" width="140px"  ></el-table-column>
           <el-table-column prop="address" label="地址" ></el-table-column>
           <el-table-column  label="操作" width="100px">
                 <template slot-scope="scope">
@@ -72,11 +72,13 @@
                       style="width:100%"
                       placeholder="请选择地区"
                       v-model="ruleForm.region"
+                      @change="regionChange"
+                      :props="{ expandTrigger: 'hover' }"
                       :options="options">
                    </el-cascader>
             </el-form-item>
             <el-form-item label="回收公司名称：" prop="name" required>
-                  <el-select style="width:100%" v-model="ruleForm.name" placeholder="请选择回收公司">
+                  <!-- <el-select style="width:100%" v-model="ruleForm.name" placeholder="请选择回收公司">
                      <el-option
                       v-for="item in companies"
                       :key="item.value"
@@ -84,32 +86,33 @@
                        :value="item.value"
                       >
                     </el-option>
-                  </el-select>
+                  </el-select> -->
+                  <el-input v-model="ruleForm.name" ></el-input>
             </el-form-item>
             <el-form-item label="详细地址：" prop="address" required>
                   <el-input v-model="ruleForm.address" ></el-input>
             </el-form-item>
-            <el-form-item label="回收公司电话：" prop="address" required>
-                  <el-input v-model="ruleForm.phone" ></el-input>
+            <el-form-item label="回收公司电话：" prop="telephone" required>
+                  <el-input v-model="ruleForm.telephone" ></el-input>
             </el-form-item>
-            <el-form-item label="负责人姓名：" prop="name2" required>
-                  <el-input v-model="ruleForm.name2" ></el-input>
+            <el-form-item label="负责人姓名：" prop="chargeName" required>
+                  <el-input v-model="ruleForm.chargeName" ></el-input>
             </el-form-item>
-            <el-form-item label="负责人电话：" prop="phone2" required>
-                  <el-input v-model="ruleForm.phone2" ></el-input>
+            <el-form-item label="负责人电话：" prop="chargePhone" required>
+                  <el-input v-model="ruleForm.chargePhone" ></el-input>
             </el-form-item>
-            <el-form-item label="负责人性别：" prop="sex" >
-                  <el-radio v-model="ruleForm.sex" label="1">男</el-radio>
-                  <el-radio v-model="ruleForm.sex" label="2">女</el-radio>
+            <el-form-item label="负责人性别：" prop="gender" >
+                  <el-radio v-model="ruleForm.gender" :label="1">男</el-radio>
+                  <el-radio v-model="ruleForm.gender" :label="0">女</el-radio>
             </el-form-item>
             <el-form-item label="负责人年龄" prop="age" required>
                   <el-input v-model="ruleForm.age" type="number"  ></el-input>
             </el-form-item>
-            <el-form-item label="描述" prop="dsc" required>
-                  <el-input v-model="ruleForm.dsc"  ></el-input>
+            <el-form-item label="描述" prop="description" >
+                  <el-input v-model="ruleForm.description"  ></el-input>
             </el-form-item>
-            <el-form-item label="卡号" prop="number" required>
-                  <el-input v-model="ruleForm.number"  ></el-input>
+            <el-form-item label="卡号" prop="cardNumber" required>
+                  <el-input v-model="ruleForm.cardNumber"  ></el-input>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer"  >
@@ -132,6 +135,12 @@
 <script>
 const moment = require("moment");
 import { regionData } from 'element-china-area-data'
+var rData=[];
+regionData.map((ele)=>{
+  if(ele.label=="江苏省"){
+      rData.push(ele)
+  }
+})
 export default {
   data() {
     return {
@@ -141,15 +150,7 @@ export default {
       kName:'',
       mTitle:'新增',
       tableData: [
-        {
-          id: 1,
-          count: "24",
-          cName: "南京汇和环境工程技术有限公司",
-          name: "温家宏",
-          phone1: "0510-23234567",
-          phone2: "13375261245",
-          address:'南京市六合区化学工业园方水东路8号'
-        }
+   
       ],
       total: 0,
       cur_page: 1,
@@ -158,13 +159,13 @@ export default {
         region:'',
         name:'',
         address:'',
-        phone:'',
-        name2:'',
-        phone2:'',
-        sex:'1',
+        telephone:'',
+        chargeName:'',
+        chargePhone:'',
+        gender:1,
         age:'',
-        number:'',
-        dsc:'',
+        cardNumber:'',
+        description:'',
       },
       rules: {
           region: [
@@ -176,27 +177,30 @@ export default {
           address: [
               { required: true, message: '请输入详细地址' }
           ],
-          phone: [
+          telephone: [
               { required: true, message: '请输入回收公司电话' }
           ],
-          name2: [
+          chargeName: [
               { required: true, message: '请输入负责人姓名' }
           ],
-          phone2: [
+          chargePhone: [
               { required: true, message: '请输入负责人电话' }
           ],
           age: [
               { required: true, message: '请输入负责人年龄' }
           ],
-          dsc: [
-              { required: true, message: '请输入描述' }
+          gender: [
+              { required: true, message: '请输入负责人年龄' }
           ],
-          number: [
+          // description: [
+          //     { required: true, message: '请输入描述' }
+          // ],
+          cardNumber: [
               { required: true, message: '请输入卡号' }
           ],
 
       },
-      options:regionData,
+      options:rData,
       companies:[
         {name:'南京苏宁有限公司',value:'1101'},
         {name:'广州恒大有限公司',value:'1102'},
@@ -213,22 +217,49 @@ export default {
     search() {
       console.log(this.date);
     },
-    openAdd(type){
+    openAdd(type,row){
+       this.loading1=false;
       if(type==1){
-        this.mTitle='新增'
+        this.ruleForm={
+          region:'',
+          name:'',
+          address:'',
+          telephone:'',
+          chargeName:'',
+          chargePhone:'',
+          gender:1,
+          age:'',
+          cardNumber:'',
+          description:'',
+        };
+        if(this.$refs['ruleForm']){
+           this.$refs['ruleForm'].resetFields();
+        }
+        this.mTitle='新增';
       }else{
+        var form=this.ruleForm;
+        for(var key in row){
+          form[key]=row[key]
+        }
+        this.ruleForm=form;
         this.mTitle='详情'
       }
       this.editVisible=true;
     },
-    detials(){
-      this.openAdd(2);
+    detials(index,row){
+      this.openAdd(2,row);
     },
     // 保存编辑
     saveEdit(formName) {
         this.$refs[formName].validate((valid) => {
             if (valid) {
+               this.ruleForm.city=this.ruleForm.region[1];
+               this.ruleForm.county=this.ruleForm.region[2];
+               if( this.mTitle=='新增'){
                 this.add()
+               }else{
+                this.edit();
+               }
             } else {
                 return false;
             }
@@ -237,39 +268,90 @@ export default {
     // 添加
     add(){
         this.loading1=true;
-        // this.$axios({
-        //       method:'post',
-        //       url:'/api/customer/save',
-        //       data:this.$qs.stringify({
-        //           name:this.ruleForm.name,
-        //           key:this.ruleForm.key,
-        //           userIds:this.ruleForm.manager.join(','),
-        //           status:this.ruleForm.status,
-        //           xzProId:this.ruleForm.xzProId
-        //       })
-        //   }).then((res) =>{
-        //       if(res.data.code==200){
-        //       this.loading1=false;
-        //       this.editVisible = false;
-        //       this.getData()
-        //       }else{
-        //           this.$message.error(res.data.msg);
-        //       }
-        //   }).catch((error) =>{
-        //       console.log(error)    
-        //   })
+        var data=this.ruleForm;
+        delete data.region;
+        this.$axios({
+              method:'post',
+              url:'/platform/hospital/company/addDo',
+              data:this.$qs.stringify(data)
+          }).then((res) =>{
+              if(res.data.code==200){
+              this.loading1=false;
+              this.editVisible = false;
+              this.getData()
+              }else{
+                  this.$message.error(res.data.msg);
+              }
+          }).catch((error) =>{
+              console.log(error)    
+          })
+    },
+    // 编辑
+    edit(){
+        this.loading1=true;
+        var data=this.ruleForm;
+        delete data.region;
+        this.$axios({
+              method:'put',
+              url:'/platform/hospital/company/editDo',
+              data:this.$qs.stringify(data)
+          }).then((res) =>{
+              if(res.data.code==200){
+              this.loading1=false;
+              this.editVisible = false;
+              this.getData()
+              }else{
+                  this.$message.error(res.data.msg);
+              }
+          }).catch((error) =>{
+              console.log(error)    
+          })
     },
     // 删除数据
     deleteRow(){
-
+        this.$axios({
+            method:'get',
+            url:'/platform/hospital/company/delete?ids='+this.id,
+        }).then((res) =>{
+            if(res.status==200){
+                this.$message.success('删除成功');
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+      })
     },
     deal(index,row){
       this.id=row.id;
       this.delVisible=true;
+    },
+    regionChange(){
+    
+    },
+    getData(){
+        this.loading=true;
+        this.$axios({
+            method:'get',
+            url:'/platform/hospital/company/listPage?pageNumber='+this.cur_page+'&pageSize=10&name='+this.kName,
+        }).then((res) =>{
+            if(res.status==200){
+                this.loading=false;
+                // var arr=res.data.list.map((ele)=>{
+                //    ele.gender=ele.gender==0
+                // })
+                this.tableData=res.data.list;
+                this.total=res.data.totalCount;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
     }
   },
   mounted() {
- 
+    this.getData()
   }
 };
 </script>

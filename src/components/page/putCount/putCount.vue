@@ -229,11 +229,7 @@
         <el-form ref="ruleForm"  :model="ruleForm"  label-width="120px" v-loading="loading2"  >
               <el-form-item label="类型：" prop="status">
                     <el-radio-group v-model="ruleForm.type">
-                        <el-radio label="0">感染类</el-radio>
-                        <el-radio label="1">损伤类</el-radio>
-                        <el-radio label="2">病理类</el-radio>
-                        <el-radio label="3">药物类</el-radio>
-                        <el-radio label="4">化学类</el-radio>
+                        <el-radio v-for="(item,index) in types" :key="index" :label="item.id">{{item.name}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
         </el-form>
@@ -255,6 +251,7 @@ export default {
       loading1: false,
       loading2: false,
       dateType:'daterange',
+      types:[],
       columns:[],
       startYear:'',
       endYear:'',
@@ -277,7 +274,7 @@ export default {
       tableVisble1:false,
       tableVisble2:false,
       editVisible:false,
-      ruleForm:{type:'0'}
+      ruleForm:{type:''}
     }
   },
   watch:{
@@ -443,13 +440,14 @@ export default {
     // 打开编辑
     edit(index,row){
      this.editVisible=true;
+     this.editId=row.id;
     },
     // 保存编辑
     saveEdit(){
         this.loading2=true;
         this.$axios({
-            method:'get',
-            url:' /platform/hospital/rubbish/editType?id=3&typeId=1',
+            method:'put',
+            url:'/platform/hospital/rubbish/editType?id='+this.editId+'&typeid='+this.ruleForm.type,
         }).then((res) =>{
             if(res.status==200){
                this.loading2=false;
@@ -517,12 +515,29 @@ export default {
         }).catch((error) =>{
             console.log(error)    
         })
+    },
+    getType(){
+        this.$axios({
+            method:'get',
+            url:'/platform/hospital/type/data',
+        }).then((res) =>{
+            if(res.status==200){
+               this.types=res.data.data;
+               var a={type:res.data.data[0].id};
+               this.ruleForm=a;
+            }else{
+               this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
     }
   },
   mounted() {
      var end=moment().format('YYYY-MM-DD'),start=moment().subtract(30, 'days').format('YYYY-MM-DD');
      this.date=[start,end];
      this.getTable();
+     this.getType();
   }
 };
 </script>

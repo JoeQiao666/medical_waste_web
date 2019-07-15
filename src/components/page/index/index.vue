@@ -273,7 +273,7 @@ export default {
     getToday(){
         this.loading2=true;
         var url='';
-        this.activeName==1?url='/platform/hospital/rubbish/listPage?isBottle=false&pageNumber='+this.cur_page+'&pageSize=10':url='/platform/hospital/rubbish/listPage?isBottle=true&pageNumber='+this.cur_page+'&pageSize=10'
+        this.activeName==1?url='/platform/hospital/rubbish/listPageToday?isBottle=false&pageNumber='+this.cur_page+'&pageSize=10':url='/platform/hospital/rubbish/listPageToday?isBottle=true&pageNumber='+this.cur_page+'&pageSize=10'
         this.$axios({
             method:'get',
             url:url,

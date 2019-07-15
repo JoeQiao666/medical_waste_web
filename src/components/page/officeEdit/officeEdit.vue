@@ -266,10 +266,27 @@ export default {
     qrCode(index,row){
         this.codeText={id:row.id,name:row.name}
         this.codeVisible=true;
+    },
+    getData(){
+        this.loading=true;
+        this.$axios({
+            method:'get',
+            url:'/platform/hospital/department/listPage?pageNumber='+this.cur_page+'&pageSize=10&name='+this.kName,
+        }).then((res) =>{
+            if(res.status==200){
+                this.loading=false;
+                this.tableData=res.data.list;
+                this.total=res.data.totalCount;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
     }
   },
   mounted() {
- 
+    this.getData()
   }
 };
 </script>

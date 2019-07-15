@@ -99,14 +99,6 @@
         </span>
     </el-dialog>
 
-    <!-- 删除提示框 -->
-    <!-- <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-        <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="delVisible = false">取 消</el-button>
-            <el-button type="primary" @click="deleteRow">确 定</el-button>
-        </span>
-    </el-dialog> -->
   </div>
 </template>
 
@@ -262,6 +254,23 @@ export default {
         //   }).catch((error) =>{
         //       console.log(error)    
         //   })
+    },
+    getData(){
+        this.loading=true;
+        this.$axios({
+            method:'get',
+            url:'',
+        }).then((res) =>{
+            if(res.status==200){
+               this.loading=false;
+               this.tableData2=res.data.list;
+               this.total=res.data.totalCount;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
     }
   },
   mounted() {
