@@ -23,13 +23,13 @@
             </div>
             <el-button
               style="margin-left:10px"
-              @click="search"
+              @click="getData"
               type="primary"
               icon="el-icon-search"
             >搜索</el-button>
             <el-button
               style="margin-left:10px"
-              @click="openAdd(1)"
+              @click="openAdd(1,row)"
               type="primary"
               icon="el-icon-plus"
             >新增</el-button>
@@ -41,8 +41,8 @@
             v-loading="loading"
           >
           <el-table-column type="index" label="序号" align="center" width="55"></el-table-column>
-          <el-table-column prop="name1"  label="岗位名称" align="center" ></el-table-column>
-          <el-table-column prop="name2"  label="角色名称" align="center"  ></el-table-column>
+          <el-table-column prop="name"  label="岗位名称" align="center" ></el-table-column>
+          <el-table-column prop="roleName"  label="角色名称" align="center"  ></el-table-column>
           <el-table-column  label="操作" width="100px" align="center" > 
                 <template slot-scope="scope">
                         <span class="pointer"  @click="detials(scope.$index, scope.row)">编辑</span>
@@ -64,16 +64,16 @@
     <!-- 编辑弹出框 -->
     <el-dialog :title="mTitle" :visible.sync="editVisible" width="40%"  >
         <el-form ref="ruleForm"  :model="ruleForm"  :rules="rules" label-width="120px" v-loading="loading1"  >
-            <el-form-item label="岗位名称：" prop="name1" required>
-                  <el-input v-model="ruleForm.name1" ></el-input>
+            <el-form-item label="岗位名称：" prop="name" required>
+                  <el-input v-model="ruleForm.name" ></el-input>
             </el-form-item>
-            <el-form-item label="角色名称：" prop="name2" required>
-                  <el-select style="width:100%" v-model="ruleForm.name2" placeholder="请选择角色">
+            <el-form-item label="角色名称：" prop="roleId" required>
+                  <el-select style="width:100%" v-model="ruleForm.roleId" placeholder="请选择角色">
                      <el-option
-                      v-for="item in users"
-                      :key="item.value"
+                      v-for="item in role"
+                      :key="item.id"
                       :label="item.name"
-                       :value="item.value"
+                       :value="item.id"
                       >
                     </el-option>
                   </el-select>
@@ -107,33 +107,29 @@ export default {
       kName:'',
       mTitle:'新增',
       tableData: [
-        {
-          id: 1,
-          name1: "垃圾回收员",
-          name2: "2",
-        }
+
       ],
       total: 0,
       cur_page: 1,
       editVisible:false,
       ruleForm:{
-        name1:'',
-        name2:''
+        name:'',
+        roleName:''
       },
       rules: {
-          name1: [
+          name: [
               { required: true, message: '请输入岗位名称' }
           ],
-          name2: [
+          roleName: [
               { required: true, message: '请选择' }
           ],
       },
-      users:[
-        {name:'超级管理员',value:'1'},
-        {name:'交接人',value:'2'},
-        {name:'回收员',value:'3'},
-        {name:'暂存点',value:'4'},
-        {name:'回收公司',value:'5'},
+      role:[
+        // {name:'超级管理员',value:'1'},
+        // {name:'交接人',value:'2'},
+        // {name:'回收员',value:'3'},
+        // {name:'暂存点',value:'4'},
+        // {name:'回收公司',value:'5'},
       ]
     };
   },
@@ -141,28 +137,46 @@ export default {
     // 点击切换页码
     handleCurrentChange(val) {
       this.cur_page = val;
-      // this.getTask();
+      this.getData()
     },
     // 查询
     search() {
       console.log(this.date);
     },
-    openAdd(type){
+    openAdd(type,row){
+      this.loading1=false;
       if(type==1){
-        this.mTitle='新增'
+        this.mTitle='新增';
+        this.ruleForm={
+             name:'',
+             roleName:''
+        };
+        if(this.$refs['ruleForm']){
+           this.$refs['ruleForm'].resetFields();
+        }
       }else{
-        this.mTitle='详情'
+        this.mTitle='详情';
+        var form=this.ruleForm;
+        for(var key in row){
+          form[key]=row[key]
+        }
+        this.ruleForm=form;
       }
       this.editVisible=true;
     },
-    detials(){
-      this.openAdd(2);
+    detials(index,row){
+      this.openAdd(2,row);
     },
     // 保存编辑
     saveEdit(formName) {
         this.$refs[formName].validate((valid) => {
             if (valid) {
+              if(this.mTitle=='新增'){
                 this.add()
+              }else{
+                this.edit()
+              }
+
             } else {
                 return false;
             }
@@ -171,39 +185,95 @@ export default {
     // 添加
     add(){
         this.loading1=true;
-        // this.$axios({
-        //       method:'post',
-        //       url:'/api/customer/save',
-        //       data:this.$qs.stringify({
-        //           name:this.ruleForm.name,
-        //           key:this.ruleForm.key,
-        //           userIds:this.ruleForm.manager.join(','),
-        //           status:this.ruleForm.status,
-        //           xzProId:this.ruleForm.xzProId
-        //       })
-        //   }).then((res) =>{
-        //       if(res.data.code==200){
-        //       this.loading1=false;
-        //       this.editVisible = false;
-        //       this.getData()
-        //       }else{
-        //           this.$message.error(res.data.msg);
-        //       }
-        //   }).catch((error) =>{
-        //       console.log(error)    
-        //   })
+        this.$axios({
+              method:'post',
+              url:'/platform/hospital/position/addDo',
+              data:this.$qs.stringify(this.ruleForm)
+          }).then((res) =>{
+              if(res.data.code==200){
+              this.loading1=false;
+              this.editVisible = false;
+              this.getData()
+              }else{
+                  this.$message.error(res.data.msg);
+              }
+          }).catch((error) =>{
+              console.log(error)    
+          })
+    },
+     // 编辑
+    edit(){
+        this.loading1=true;
+        this.$axios({
+              method:'put',
+              url:'/platform/hospital/company/editDo',
+              data:this.$qs.stringify(this.ruleForm)
+          }).then((res) =>{
+              if(res.data.code==200){
+              this.loading1=false;
+              this.editVisible = false;
+              this.getData()
+              }else{
+                  this.$message.error(res.data.msg);
+              }
+          }).catch((error) =>{
+              console.log(error)    
+        })
     },
     // 删除数据
     deleteRow(){
-
+      this.$axios({
+            method:'get',
+            url:'/platform/hospital/position/delete?ids='+this.id,
+        }).then((res) =>{
+            if(res.status==200){
+                this.$message.success('删除成功');
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+      })
     },
     deal(index,row){
       this.id=row.id;
       this.delVisible=true;
+    },
+    getData(){
+        this.loading=true;
+        this.$axios({
+            method:'get',
+            url:'/platform/hospital/position/listPage?pageNumber='+this.cur_page+'&pageSize=10&name='+this.kName,
+        }).then((res) =>{
+            if(res.status==200){
+                this.loading=false;
+                this.tableData=res.data.list;
+                this.total=res.data.totalCount;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
+    getRole(){
+       this.$axios({
+            method:'get',
+            url:' /platform/sys/role/data',
+        }).then((res) =>{
+            if(res.status==200){
+                this.role=res.data.data;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+      })
     }
   },
   mounted() {
- 
+     this.getData()
+     this.getRole();
   }
 };
 </script>

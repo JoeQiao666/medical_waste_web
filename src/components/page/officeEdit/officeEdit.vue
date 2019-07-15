@@ -194,28 +194,44 @@ export default {
     // 点击切换页码
     handleCurrentChange(val) {
       this.cur_page = val;
-      // this.getTask();
+      this.getData()
     },
     // 查询
     search() {
       console.log(this.date);
     },
-    openAdd(type){
+    openAdd(type,row){
+         this.loading1=false;
       if(type==1){
-        this.mTitle='新增'
+        this.mTitle='新增';
+        this.ruleForm={
+             name:'',
+        };
+        if(this.$refs['ruleForm']){
+           this.$refs['ruleForm'].resetFields();
+        }
       }else{
-        this.mTitle='详情'
+        this.mTitle='详情';
+        var form=this.ruleForm;
+        for(var key in row){
+          form[key]=row[key]
+        }
+        this.ruleForm=form;
       }
       this.editVisible=true;
     },
-    detials(){
-      this.openAdd(2);
+    detials(index,row){
+      this.openAdd(2,row);
     },
     // 保存编辑
     saveEdit(formName) {
         this.$refs[formName].validate((valid) => {
             if (valid) {
+              if(this.mTitle=='新增'){
                 this.add()
+              }else{
+                this.edit()
+              }
             } else {
                 return false;
             }
@@ -224,31 +240,57 @@ export default {
     // 添加
     add(){
         this.loading1=true;
-        // this.$axios({
-        //       method:'post',
-        //       url:'/api/customer/save',
-        //       data:this.$qs.stringify({
-        //           name:this.ruleForm.name,
-        //           key:this.ruleForm.key,
-        //           userIds:this.ruleForm.manager.join(','),
-        //           status:this.ruleForm.status,
-        //           xzProId:this.ruleForm.xzProId
-        //       })
-        //   }).then((res) =>{
-        //       if(res.data.code==200){
-        //       this.loading1=false;
-        //       this.editVisible = false;
-        //       this.getData()
-        //       }else{
-        //           this.$message.error(res.data.msg);
-        //       }
-        //   }).catch((error) =>{
-        //       console.log(error)    
-        //   })
+        this.$axios({
+              method:'post',
+              url:'/platform/hospital/department/addDo',
+              data:this.$qs.stringify({
+                  name:this.ruleForm.name,
+              })
+          }).then((res) =>{
+              if(res.data.code==200){
+              this.loading1=false;
+              this.editVisible = false;
+              this.getData()
+              }else{
+                  this.$message.error(res.data.msg);
+              }
+          }).catch((error) =>{
+              console.log(error)    
+          })
+    },
+    // 编辑
+    edit(){
+        this.loading1=true;
+        this.$axios({
+              method:'put',
+              url:'/platform/hospital/department/editDo',
+              data:this.$qs.stringify(this.ruleForm)
+          }).then((res) =>{
+              if(res.data.code==200){
+              this.loading1=false;
+              this.editVisible = false;
+              this.getData()
+              }else{
+                  this.$message.error(res.data.msg);
+              }
+          }).catch((error) =>{
+              console.log(error)    
+        })
     },
     // 删除数据
     deleteRow(){
-
+        this.$axios({
+              method:'get',
+              url:'/platform/hospital/department/delete?ids='+this.id,
+          }).then((res) =>{
+              if(res.status==200){
+                  this.$message.success('删除成功');
+              }else{
+                  this.$message.error(res.data.msg);
+              }
+          }).catch((error) =>{
+              console.log(error)    
+        })
     },
     deal(index,row){
       this.id=row.id;
@@ -275,7 +317,10 @@ export default {
         }).then((res) =>{
             if(res.status==200){
                 this.loading=false;
-                this.tableData=res.data.list;
+                this.tableData=res.data.list.map((ele)=>{
+                    ele.time=moment(ele.opAt).format('YYYY-MM-DD HH:mm:ss')
+                    return ele
+                });
                 this.total=res.data.totalCount;
             }else{
                 this.$message.error(res.data.msg);

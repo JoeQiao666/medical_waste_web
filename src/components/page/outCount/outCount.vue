@@ -444,7 +444,7 @@ export default {
     // 点击切换页码
     handleCurrentChange(val){
           this.cur_page = val;
-          // this.getTask();
+         this.getData()
     },
     // 点击切换页码二级
     handleCurrentChange1(val){

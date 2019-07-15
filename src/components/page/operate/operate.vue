@@ -187,7 +187,7 @@ export default {
      // 点击切换页码
     handleCurrentChange(val){
           this.cur_page = val;
-          // this.getTask();
+          this.getData()
     },
     handleSelectionChange(){
        var arr=val.map((ele)=>{

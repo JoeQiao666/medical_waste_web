@@ -211,7 +211,7 @@ export default {
     // 点击切换页码
     handleCurrentChange(val) {
       this.cur_page = val;
-      // this.getTask();
+      this.getData()
     },
     // 查询
     search() {
@@ -337,9 +337,6 @@ export default {
         }).then((res) =>{
             if(res.status==200){
                 this.loading=false;
-                // var arr=res.data.list.map((ele)=>{
-                //    ele.gender=ele.gender==0
-                // })
                 this.tableData=res.data.list;
                 this.total=res.data.totalCount;
             }else{
