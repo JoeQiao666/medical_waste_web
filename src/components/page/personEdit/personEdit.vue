@@ -13,7 +13,7 @@
         <div class="flex headSelect" style="margin-bottom:10px;">
           <div class="flex">
             <img class="titleIcon" src="../../../assets/img/form.png" alt />
-            <div style="margin-top: -4px;">人员编辑</div>
+            <div style="margin-top: -4px;    width: 74px;">人员编辑</div>
           </div>
 
           <div class="flex funcHead">
@@ -27,14 +27,14 @@
                 <el-option
                   v-for="item in options"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.id">
+                  :label="item.name"
+                  :value="item.name">
                 </el-option>
               </el-select>
             </div>
             <el-button
               style="margin-left:10px"
-              @click="search"
+              @click="getData"
               type="primary"
               icon="el-icon-search"
             >搜索</el-button>
@@ -70,19 +70,19 @@
             v-loading="loading"
           >
           <el-table-column type="index" label="序号"  width="55"></el-table-column>
-          <el-table-column prop="user"  label="账号"  ></el-table-column>
-          <el-table-column prop="name1"  label="人员名称"  ></el-table-column>
-          <el-table-column prop="name"  label="角色"  ></el-table-column>
-          <el-table-column prop="name"  label="岗位"  ></el-table-column>
-          <el-table-column prop="name"  label="科室"  ></el-table-column>
+          <el-table-column prop="loginname"  label="账号"  ></el-table-column>
+          <el-table-column prop="username"  label="人员名称"  ></el-table-column>
+          <el-table-column prop="roleName"  label="角色"  ></el-table-column>
+          <el-table-column prop="positionName"  label="岗位"  ></el-table-column>
+          <el-table-column prop="departmentName"  label="科室"  ></el-table-column>
           <el-table-column prop="code"  label="二维码"   >
                 <template slot-scope="scope">
                         <span class="pointer"  @click="qrCode(scope.$index, scope.row)">点击查看</span>
                  </template>
           </el-table-column>
-          <el-table-column prop="power"  label="后台开启权限"   >
-          </el-table-column>
-          <el-table-column prop="time"  label="修改时间" width="140"  ></el-table-column>
+          <!-- <el-table-column prop="opAt"  label="后台开启权限"   >
+          </el-table-column> -->
+          <el-table-column prop="time" :formatter="timeFormate"  label="修改时间" width="140"  ></el-table-column>
           <el-table-column  label="操作" width="150px"  > 
                 <template slot-scope="scope">
                         <span class="pointer"  @click="detials(scope.$index, scope.row)">编辑</span>
@@ -201,13 +201,6 @@ export default {
               { required: true, message: '请输入科室名称' }
           ],
       },
-      users:[
-        {name:'超级管理员',value:'1'},
-        {name:'交接人',value:'2'},
-        {name:'回收员',value:'3'},
-        {name:'暂存点',value:'4'},
-        {name:'回收公司',value:'5'},
-      ],
       options:[
         {label:'护士',id:1},
         {label:'管理员',id:2},
@@ -220,6 +213,9 @@ export default {
          vCode
   },
   methods: {
+    timeFormate(row){
+         return moment(row.opAt).format('YYYY-MM-DD HH:mm:ss');
+    },
     // 点击切换页码
     handleCurrentChange(val) {
       this.cur_page = val;
@@ -293,7 +289,7 @@ export default {
       this.$refs.upload.submit();
     },
     qrCode(index,row){
-        this.codeText={id:row.id,name:row.name}
+        this.codeText={id:row.id,name:row.username}
         this.codeVisible=true;
     },
     statusChange(){
@@ -312,10 +308,42 @@ export default {
           });
         }).catch(() => {         
         });
-    }
+    },
+    getJob(){
+        this.$axios({
+            method:'get',
+            url:'/platform/hospital/position/data',
+        }).then((res) =>{
+            if(res.status==200){
+                this.options=res.data.data;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
+    getData(){
+        this.loading=true;
+        this.$axios({
+            method:'get',
+            url:'/platform/sys/user/listPage??pageNumber='+this.cur_page+'&pageSize=10&username='+this.kName+'&positionName='+this.jName,
+        }).then((res) =>{
+            if(res.status==200){
+                this.loading=false;
+                this.tableData=res.data.list;
+                this.total=res.data.totalCount;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
   },
   mounted() {
- 
+    this.getJob()
+    this.getData()
   }
 };
 </script>

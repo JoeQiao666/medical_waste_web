@@ -119,8 +119,8 @@
               </div>
 
               <div align="center" >
-                <el-button type="primary">全部入库</el-button>
-                <el-button type="primary">确认入库</el-button>
+                <el-button @click="addIn(1)" type="primary">全部入库</el-button>
+                <el-button @click="addIn(1)" type="primary">确认入库</el-button>
               </div>
           </el-tab-pane>
         </el-tabs>
@@ -145,12 +145,8 @@ export default {
       total:0,
       cur_page:1,
       office:[
-        {id:1,name:'输液大厅'}
       ],
       types:[
-        {id:1,name:'感染型'},
-        {id:2,name:'损伤型'},
-        {id:3,name:'病理型'},
       ],
       ruleForm:{
           office:'',
@@ -178,7 +174,7 @@ export default {
     // 切换tab
     handleClick(tab, event) {
        if(tab.index==1){
-
+          this.getData()
        }else{
        
       
@@ -194,11 +190,99 @@ export default {
          return ele.id
        })
        this.chooseIds=arr;
-    }
+    },
+    add(){
+        this.loading=true;
+        this.$axios({
+            method:'post',
+            url:'/platform/hospital/rubbish/addDo',
+            data:this.ruleForm
+        }).then((res) =>{
+            if(res.status==200){
+                this.loading=false;
+                this.tableData=res.data.list;
+                this.total=res.data.totalCount;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
+    getDepartment(){
+         this.$axios({
+            method:'get',
+            url:'/platform/hospital/department/data',
+        }).then((res) =>{
+            if(res.status==200){
+                this.office=res.data.data;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
+    getType(){
+        this.$axios({
+            method:'get',
+            url:'/platform/hospital/type/data',
+        }).then((res) =>{
+            if(res.status==200){
+               this.types=res.data.data;
+            }else{
+               this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
+    // 补入库
+    addIns(){
+        this.loading=true;
+        this.$axios({
+            method:'put',
+            url:'/platform/hospital/rubbish/store?ids='+this.ids,
+        }).then((res) =>{
+            if(res.status==200){
+                this.loading=false;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
+    addIn(t){
+        if(t==1){
+           var arr=this.tableData.map((ele)=>{
+            return ele.id
+          })
+          this.chooseIds=arr;
+        }
+        this.addIns();
+    },
+    getData(){
+        this.loading=true;
+        this.$axios({
+            method:'get',
+            url:'/platform/hospital/position/listPage?pageNumber='+this.cur_page+'&pageSize=10&name='+this.kName,
+        }).then((res) =>{
+            if(res.status==200){
+                this.loading=false;
+                this.tableData=res.data.list;
+                this.total=res.data.totalCount;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
   },
   mounted() {
-
- 
+    this.getDepartment()
+    this.getType()
   }
 };
 </script>

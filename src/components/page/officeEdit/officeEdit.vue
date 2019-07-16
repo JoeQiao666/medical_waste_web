@@ -243,11 +243,11 @@ export default {
         this.$axios({
               method:'post',
               url:'/platform/hospital/department/addDo',
-              data:this.$qs.stringify({
+              data:{
                   name:this.ruleForm.name,
-              })
+              }
           }).then((res) =>{
-              if(res.data.code==200){
+              if(res.data.code==0){
               this.loading1=false;
               this.editVisible = false;
               this.getData()
@@ -264,9 +264,9 @@ export default {
         this.$axios({
               method:'put',
               url:'/platform/hospital/department/editDo',
-              data:this.$qs.stringify(this.ruleForm)
+              data:this.ruleForm
           }).then((res) =>{
-              if(res.data.code==200){
+              if(res.data.code==0){
               this.loading1=false;
               this.editVisible = false;
               this.getData()
@@ -280,11 +280,13 @@ export default {
     // 删除数据
     deleteRow(){
         this.$axios({
-              method:'get',
+              method:'DELETE',
               url:'/platform/hospital/department/delete?ids='+this.id,
           }).then((res) =>{
               if(res.status==200){
                   this.$message.success('删除成功');
+                  this.delVisible=false;
+                  this.getData();
               }else{
                   this.$message.error(res.data.msg);
               }
