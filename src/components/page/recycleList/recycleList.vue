@@ -78,15 +78,6 @@
                    </el-cascader>
             </el-form-item>
             <el-form-item label="回收公司名称：" prop="name" required>
-                  <!-- <el-select style="width:100%" v-model="ruleForm.name" placeholder="请选择回收公司">
-                     <el-option
-                      v-for="item in companies"
-                      :key="item.value"
-                      :label="item.name"
-                       :value="item.value"
-                      >
-                    </el-option>
-                  </el-select> -->
                   <el-input v-model="ruleForm.name" ></el-input>
             </el-form-item>
             <el-form-item label="详细地址：" prop="address" required>
@@ -149,9 +140,7 @@ export default {
       delVisible: false,
       kName:'',
       mTitle:'新增',
-      tableData: [
-   
-      ],
+      tableData: [],
       total: 0,
       cur_page: 1,
       editVisible:false,
@@ -192,19 +181,12 @@ export default {
           gender: [
               { required: true, message: '请输入负责人年龄' }
           ],
-          // description: [
-          //     { required: true, message: '请输入描述' }
-          // ],
           cardNumber: [
               { required: true, message: '请输入卡号' }
           ],
 
       },
       options:rData,
-      companies:[
-        {name:'南京苏宁有限公司',value:'1101'},
-        {name:'广州恒大有限公司',value:'1102'},
-      ]
     };
   },
   methods: {
@@ -237,6 +219,9 @@ export default {
         }
         this.mTitle='新增';
       }else{
+        if(this.$refs['ruleForm']){
+           this.$refs['ruleForm'].resetFields();
+        }
         var form=this.ruleForm;
         for(var key in row){
           form[key]=row[key]
@@ -253,8 +238,6 @@ export default {
     saveEdit(formName) {
         this.$refs[formName].validate((valid) => {
             if (valid) {
-               this.ruleForm.city=this.ruleForm.region[1];
-               this.ruleForm.county=this.ruleForm.region[2];
                if( this.mTitle=='新增'){
                 this.add()
                }else{
@@ -273,9 +256,9 @@ export default {
         this.$axios({
               method:'post',
               url:'/platform/hospital/company/addDo',
-              data:this.$qs.stringify(data)
+              data:data
           }).then((res) =>{
-              if(res.data.code==200){
+              if(res.data.code==0){
               this.loading1=false;
               this.editVisible = false;
               this.getData()
@@ -290,13 +273,15 @@ export default {
     edit(){
         this.loading1=true;
         var data=this.ruleForm;
+        data.city= JSON.stringify({name:data.city,value:data.region[1]});
+        data.county=JSON.stringify({name:data.county,value:data.region[2]});
         delete data.region;
         this.$axios({
               method:'put',
               url:'/platform/hospital/company/editDo',
-              data:this.$qs.stringify(data)
+              data:data
           }).then((res) =>{
-              if(res.data.code==200){
+              if(res.data.code==0){
               this.loading1=false;
               this.editVisible = false;
               this.getData()
@@ -310,11 +295,13 @@ export default {
     // 删除数据
     deleteRow(){
         this.$axios({
-            method:'get',
+            method:'DELETE',
             url:'/platform/hospital/company/delete?ids='+this.id,
         }).then((res) =>{
             if(res.status==200){
                 this.$message.success('删除成功');
+                this.delVisible=false;
+                this.getData();
             }else{
                 this.$message.error(res.data.msg);
             }
@@ -326,8 +313,20 @@ export default {
       this.id=row.id;
       this.delVisible=true;
     },
-    regionChange(){
-    
+    regionChange(e){
+      var city='',county='';
+      rData[0].children.forEach((ele)=>{
+         if(ele.value==e[1]){
+           city={name:ele.label,value:ele.value};
+           ele.children.forEach((ele2)=>{
+                if(ele2.value==e[2]){
+                   county={name:ele2.label,value:ele2.value}
+                }
+           })
+         }
+      })
+      this.ruleForm.city= JSON.stringify(city);
+      this.ruleForm.county=JSON.stringify(county);
     },
     getData(){
         this.loading=true;
@@ -337,7 +336,12 @@ export default {
         }).then((res) =>{
             if(res.status==200){
                 this.loading=false;
-                this.tableData=res.data.list;
+                this.tableData=res.data.list.map((ele)=>{
+                    ele.region=['320100',JSON.parse(ele.city).value,JSON.parse(ele.county).value];
+                    ele.city=JSON.parse(ele.city).name;
+                    ele.county=JSON.parse(ele.county).name;
+                    return ele
+                });
                 this.total=res.data.totalCount;
             }else{
                 this.$message.error(res.data.msg);

@@ -11,7 +11,7 @@
       </el-breadcrumb>
     </div>
     <div class="container">
-      <div v-loading="loading" >
+      <div  >
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
           <el-tab-pane label="医废类" name="1">
            
@@ -26,53 +26,27 @@
                 <div class='flex'>
                   <img class="titleIcon" src="../../../assets/img/time.png" alt="">
                   <div style="margin-top: -4px;">出库报表</div>
-                  <div class="radio" >
-                            <el-radio v-model="cType" label="day">日统计</el-radio>
-                            <el-radio v-model="cType" label="month">月统计</el-radio>
-                            <el-radio v-model="cType" label="year">年统计</el-radio>
-                  </div>
                 </div>
                 
                 <div class="flex funcHead">
-                       
-                         <div class="block" v-show="cType!=='year'" >
-                               <span class="demonstration">重量统计时间：</span>
-                               <el-date-picker
-                                style="width:280px"
-                                v-model="date"
-                                :type="dateType"
-                                range-separator="~"
-                                :value-format="vFormate"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期">
-                              </el-date-picker>
-                        </div>
-                         <div class="block" v-show="cType=='year'">
-                               <span class="demonstration">重量统计时间：</span>
-                               <el-date-picker
-                                style="width:100px"
-                                v-model="startYear"
-                                value-format="yyyy"
-                                @change="yearChange($event,1)"
-                                type="year">
-                                </el-date-picker>
-                                <span class="demonstration">~</span>
-                                <el-date-picker
-                                style="width:100px"
-                                value-format="yyyy"
-                                v-model="endYear"
-                                @ @change="yearChange($event,2)"
-                                type="year">
-                              </el-date-picker>
-                        </div>
-                        <el-button style="margin-left:10px" @click="search"  type="primary" icon="el-icon-search">搜索</el-button>
+                          <span class="demonstration">重量统计时间：</span>
+                          <el-date-picker
+                          style="width:280px"
+                          v-model="date"
+                          :type="dateType"
+                          range-separator="~"
+                          :value-format="vFormate"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期">
+                        </el-date-picker>
+                        <el-button style="margin-left:10px" @click="getTable"  type="primary" icon="el-icon-search">搜索</el-button>
                         <el-button style="margin-left:10px" @click="getExcel" type="primary" icon="el-icon-download">导出报表</el-button>
                 </div>
          </div>
          <el-table
               :data="tableData"
               style="width: 100%"
-              v-loading="loading2"
+              v-loading="loading"
               show-summary
               :summary-method="getSummaries"
               @selection-change="handleSelectionChange"
@@ -82,56 +56,29 @@
                 label="序号"
                 width="50">
               </el-table-column>
-                <el-table-column
-                prop="time"
+              <el-table-column
+                prop="storeTime"
                 label="出库时间">
               </el-table-column>
               <el-table-column
-                prop="count"
+                prop="storeTimes"
                 label="出库次数">
               </el-table-column>
                 <el-table-column
-                prop="weight"
+                prop="total"
                 sortable
                 label="应出库总重量"
                 :formatter="formatter"
               >
               </el-table-column>
-              <el-table-column
-                prop="weight1"
-                sortable
-                label="感染类总重量"
-                :formatter="formatter"
-              >
-              </el-table-column>
-            
-              <el-table-column
-                prop="weight2"
-                label="损伤类总重量"
-                sortable
-                :formatter="formatter"
-                >
-              </el-table-column>
-              <el-table-column
-                prop="weight3"
-                label="病理类总重量"
-                sortable
-                :formatter="formatter"
-                >
-              </el-table-column>
-              <el-table-column
-                prop="weight4"
-                label="药物类总重量"
-                sortable
-                :formatter="formatter"
-                >
-              </el-table-column>
-              <el-table-column
-                prop="weight5"
-                label="化学类总重量"
-                sortable
-                :formatter="formatter"
-                >
+             <el-table-column
+                    :prop="item"
+                    sortable
+                    :label="item"
+                    :formatter="formatter"
+                    v-for="(item,ind) in columns"
+                    :key="ind"
+                  >
               </el-table-column>
               <el-table-column
                  label="操作记录"
@@ -149,86 +96,11 @@
     </div>
 
     <el-dialog title="操作记录" :visible.sync="tableVisble1" width="80%"  >
-        <div align="right" style="margin-top: -40px;" ><el-button @click="getExcel1" type="primary" icon="el-icon-download">导出报表</el-button></div>
-        <el-table
-              :data="tableData"
-              style="width: 100%"
-              v-loading="loading2"
-              show-summary
-              :summary-method="getSummaries1"
-              @selection-change="handleSelectionChange"
-              >
-              <el-table-column
-                type="index"
-                label="序号"
-                width="50">
-              </el-table-column>
-                <el-table-column
-                prop="time"
-                label="出库时间">
-              </el-table-column>
-                <el-table-column
-                prop="weight"
-                sortable
-                label="应出库总重量"
-                :formatter="formatter"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="weight1"
-                sortable
-                label="感染类总重量"
-                :formatter="formatter"
-              >
-              </el-table-column>
-            
-              <el-table-column
-                prop="weight2"
-                label="损伤类总重量"
-                sortable
-                :formatter="formatter"
-                >
-              </el-table-column>
-              <el-table-column
-                prop="weight3"
-                label="病理类总重量"
-                sortable
-                :formatter="formatter"
-                >
-              </el-table-column>
-              <el-table-column
-                prop="weight4"
-                label="药物类总重量"
-                sortable
-                :formatter="formatter"
-                >
-              </el-table-column>
-              <el-table-column
-                prop="weight5"
-                label="化学类总重量"
-                sortable
-                :formatter="formatter"
-                >
-              </el-table-column>
-              <el-table-column
-                 label="操作记录"
-                 width="100" align="center">
-                 <template slot-scope="scope">
-                        <span class="pointer"  @click="detials(scope.$index, scope.row,2)">点击查看</span>
-                 </template>
-              </el-table-column>
-          </el-table>
-          <div class="pagination">
-              <el-pagination background @current-change="handleCurrentChange1" layout="total, prev, pager, next, jumper" :total="total1">
-              </el-pagination>
-          </div>
-    </el-dialog>
-    <el-dialog title="操作记录" :visible.sync="tableVisble2" width="80%"  >
         <div align="right" style="margin-top: -40px;" ><el-button @click="getExcel2" type="primary" icon="el-icon-download">导出报表</el-button></div>
         <el-table
-              :data="tableData3"
+              :data="tableData2"
               style="width: 100%"
-              v-loading="loading2"
+              v-loading="loading1"
               @selection-change="handleSelectionChange"
               >
               <el-table-column
@@ -237,11 +109,11 @@
                 width="50">
               </el-table-column>
                 <el-table-column
-                prop="time"
+                prop="createdTime"
                 label="新增时间">
               </el-table-column>
                <el-table-column
-                prop="name"
+                prop="departmentName"
                 sortable
                 label="科室"
               >
@@ -254,28 +126,27 @@
               >
               </el-table-column>
               <el-table-column
-                prop="weight1"
+                prop="typeName"
                 sortable
                 label="类型"
                 width="100"
-                :formatter="formatterType"
               >
               </el-table-column>
             
               <el-table-column
                 prop="weight2"
                 label="记录状态"
-                :formatter="formatterStatus"
                 >
+                暂存点已出库
               </el-table-column>
               <el-table-column
-                prop="p1"
+                prop="operatorName"
                 label="操作人"
                 width="80"
                 >
               </el-table-column>
               <el-table-column
-                prop="p2"
+                prop="staffName"
                 label="交接人"
                 width="80"
                 >
@@ -284,8 +155,8 @@
                  label="操作"
                  width="150" align="center">
                  <template slot-scope="scope">
-                        <span class="pointer"  @click="detials(scope.$index, scope.row,3)">查看详情</span>
-                        <span style="margin-left:10px" class="pointer"  @click="edit(scope.$index, scope.row)">编辑</span>
+                        <span class="pointer"  @click="detials(scope.$index, scope.row,2)">查看详情</span>
+                        <!-- <span style="margin-left:10px" class="pointer"  @click="edit(scope.$index, scope.row)">编辑</span> -->
                  </template>
               </el-table-column>
           </el-table>
@@ -294,7 +165,7 @@
               </el-pagination>
           </div>
     </el-dialog>
-    <el-dialog title="查看详情" :visible.sync="tableVisble3" width="80%"  >
+    <el-dialog title="查看详情" :visible.sync="tableVisble2" width="80%"  >
       <div class="cTitle" >垃圾编号： 54bbbb1Hbbbb3b7637dddd5d9859rJAs</div>
       <div class="flex detailBox">
           <div>
@@ -329,14 +200,10 @@
 
         <!-- 编辑弹出框 -->
     <el-dialog title="编辑" :visible.sync="editVisible" width="40%"  >
-        <el-form ref="ruleForm"  :model="ruleForm"  label-width="120px" v-loading="loading1"  >
+        <el-form ref="ruleForm"  :model="ruleForm"  label-width="120px" v-loading="loading2"  >
               <el-form-item label="类型：" prop="status">
                     <el-radio-group v-model="ruleForm.type">
-                        <el-radio label="0">感染类</el-radio>
-                        <el-radio label="1">损伤类</el-radio>
-                        <el-radio label="2">病理类</el-radio>
-                        <el-radio label="3">药物类</el-radio>
-                        <el-radio label="4">化学类</el-radio>
+                        <el-radio v-for="(item,index) in types" :key="index" :label="item.id">{{item.name}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
         </el-form>
@@ -358,6 +225,8 @@ export default {
       loading1: false,
       loading2: false,
       dateType:'daterange',
+      types:[],
+      columns:[],
       startYear:'',
       endYear:'',
       activeName: "1",
@@ -366,11 +235,8 @@ export default {
       cType:'day',
       type:'1',
       tableData:[
-        {id:1,time:'2017-03-12 10:55:55',count:12,weight:'71.25',weight1:'21.25',weight2:'13.14',weight3:"",weight4:"",weight5:""},
       ],
-      tableData3:[
-        {id:1,time:'2017-03-12 10:55:55',name:'综合病区',weight:'4.48',type:'1',status:'1',p1:'回收员',p2:'江达生'},
-        {id:2,time:'2018-04-14 16:35:55',name:'口腔科',weight:'4.48',type:'2',status:'2',p1:'回收员',p2:'江达生'},
+      tableData2:[
       ],
       total:0,
       total1:0,
@@ -378,37 +244,12 @@ export default {
       vFormate:'yyyy-MM-dd',
       cur_page:1,
       cur_page1:1,
-      cur_page2:1,
       chooseIds:[],
       tableVisble1:false,
       tableVisble2:false,
-      tableVisble3:false,
       editVisible:false,
-      ruleForm:{type:'0'}
+      ruleForm:{type:''}
     }
-  },
-  watch:{
-     cType:{
-        handler: function (val) {
-           if(val=='day'){
-             this.dateType='daterange';
-             this.vFormate="yyyy-MM-dd";
-             var end=moment().format('YYYY-MM-DD'),start=moment().subtract(30, 'days').format('YYYY-MM-DD');
-             this.date=[start,end];
-           }else if(val=='month'){
-             this.dateType='monthrange';
-             this.vFormate="yyyy-MM";
-             var end=moment().format('YYYY-MM'),start=moment().subtract(1, 'year').format('YYYY-MM');
-             this.date=[start,end];
-           }else{
-             var end=moment().format('YYYY'),start=moment().subtract(1, 'year').format('YYYY');
-             this.date=[start,end];
-             this.startYear=start;
-             this.endYear=end;
-           }
-        },
-        deep: true
-    },
   },
   methods: {
     // 重量格式化
@@ -444,7 +285,7 @@ export default {
     // 点击切换页码
     handleCurrentChange(val){
           this.cur_page = val;
-         this.getData()
+          this.getTable();
     },
     // 点击切换页码二级
     handleCurrentChange1(val){
@@ -463,6 +304,7 @@ export default {
        }else{
           this.type=1;
        }
+       this.getTable();
     },
     // 表格选中
     handleSelectionChange(val){
@@ -485,15 +327,38 @@ export default {
     },
     // 合计
     getSummaries(param) {
-       return ['','合计','111kg','11kg','12kg','0kg','0kg','0kg']
-    },
-    // 合计2
-    getSummaries1(param) {
-       return ['','合计','111kg','11kg','12kg','0kg','0kg','0kg']
-    },
-    // 查询
-    search(){
-       console.log(this.date)
+        const { columns, data } = param;
+        const sums = [];
+        columns.forEach((column, index) => {
+          if (index === 0) {
+            sums[index] = '';
+            return;
+          }else if (index === 1) {
+            sums[index] = '合计';
+            return;
+          }else if(column.label=="操作记录"){
+            sums[index] = '';
+            return;
+          }
+          const values = data.map(item => Number(item[column.property]));
+          if (!values.every(value => isNaN(value))) {
+            sums[index] = values.reduce((prev, curr) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                return prev + curr;
+              } else {
+                return prev;
+              }
+            }, 0);
+
+            if(index!==2){
+               sums[index] += ' kg';
+            }
+  
+          } 
+        });
+
+        return sums;
     },
     // 年选择器处理
     yearChange(val,type){
@@ -514,24 +379,115 @@ export default {
     detials(index,row,t){
        if(t==1){
          this.tableVisble1=true;
+         this.storeTime=row.storeTime;
+         this.getDetailTable(row.storeTime);
        }else if(t==2){
          this.tableVisble2=true;
-       }else{
-         this.tableVisble3=true;
        }
     },
     // 打开编辑
     edit(index,row){
      this.editVisible=true;
+     this.editId=row.id;
+     this.ruleForm.type=row.typeId;
     },
     // 保存编辑
     saveEdit(){
-     this.editVisible=false;
+        this.loading2=true;
+        this.$axios({
+            method:'put',
+            url:'/platform/hospital/rubbish/editType?id='+this.editId+'&typeId='+this.ruleForm.type,
+        }).then((res) =>{
+            if(res.status==200){
+               this.loading2=false;
+               this.editVisible=false;
+               this.getDetailTable(this.storeTime);
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
+    // 出库统计
+    getTable(){
+        this.loading=true;
+        var url='';
+        this.activeName==1?url='/platform/hospital/rubbish/weightPerType?formatType='+this.cType+'&start='+ this.date[0]+'&end='+this.date[1]+'&isBottle=false&status=2&pageNumber='+this.cur_page+'&pageSize=10':url='/platform/hospital/rubbish/weightPerType?formatType='+this.cType+'&start='+ this.date[0]+'&end='+this.date[1]+'&isBottle=true&status=2&pageNumber='+this.cur_page+'&pageSize=10';
+        this.$axios({
+            method:'get',
+            url:url,
+        }).then((res) =>{
+            if(res.status==200){
+               this.loading=false;
+               // 声明表格头
+               var columns=[];
+              //  表格数据处理
+               var arr=res.data.list.map((ele,ind1)=>{
+                 var obj={storeTime:ele.storeTime,total:ele.total,storeTimes:1};
+                 ele.typeNames=ele.typeNames.split(',');
+                 ele.totals=ele.totals.split(',');
+                 ele.typeNames.forEach((ele1,ind)=>{
+                     obj[ele1]= parseFloat(ele.totals[ind]);
+                     if(ind1==0){
+                      columns.push(ele1)
+                     }
+                 })
+                 return  obj
+               })
+              //  动态表格头
+               this.columns=columns;
+               this.tableData=arr;
+               this.total=res.data.totalCount;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
+    // 获取当条出库详情
+    getDetailTable(date){
+        this.loading1=true;
+        var url='';
+        this.activeName==1?url='/platform/hospital/rubbish/listPageByDate?formatType='+this.cType+'&date='+date+'&isBottle=false&status=2&pageNumber='+this.cur_page+'&pageSize=10':url='/platform/hospital/rubbish/listPageByDate?formatType='+this.cType+'&date='+date+'&isBottle=true&status=2&pageNumber='+this.cur_page+'&pageSize=10';
+        this.$axios({
+            method:'get',
+            url:url,
+        }).then((res) =>{
+            if(res.status==200){
+               this.loading1=false;
+               this.tableData2=res.data.list;
+               this.total=res.data.totalCount;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
+    getType(){
+        this.$axios({
+            method:'get',
+            url:'/platform/hospital/type/data',
+        }).then((res) =>{
+            if(res.status==200){
+               this.types=res.data.data;
+               var a={type:res.data.data[0].id};
+               this.ruleForm=a;
+            }else{
+               this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
     }
   },
   mounted() {
      var end=moment().format('YYYY-MM-DD'),start=moment().subtract(30, 'days').format('YYYY-MM-DD');
      this.date=[start,end];
+     this.getTable();
+     this.getType();
   }
 };
 </script>
@@ -588,3 +544,5 @@ export default {
   width: 98px;
 }
 </style>
+
+

@@ -65,7 +65,7 @@
                                 type="year">
                               </el-date-picker>
                         </div>
-                        <el-button style="margin-left:10px" @click="search"  type="primary" icon="el-icon-search">搜索</el-button>
+                        <el-button style="margin-left:10px" @click="getTable"  type="primary" icon="el-icon-search">搜索</el-button>
                         <el-button style="margin-left:10px" @click="getExcel" type="primary" icon="el-icon-download">导出报表</el-button>
                 </div>
          </div>
@@ -409,10 +409,6 @@ export default {
 
         return sums;
     },
-    // 查询
-    search(){
-       console.log(this.date)
-    },
     // 年选择器处理
     yearChange(val,type){
      var d=this.date; 
@@ -432,6 +428,7 @@ export default {
     detials(index,row,t){
        if(t==1){
          this.tableVisble1=true;
+         this.storeTime=row.storeTime;
          this.getDetailTable(row.storeTime);
        }else if(t==2){
          this.tableVisble2=true;
@@ -441,17 +438,19 @@ export default {
     edit(index,row){
      this.editVisible=true;
      this.editId=row.id;
+     this.ruleForm.type=row.typeId;
     },
     // 保存编辑
     saveEdit(){
         this.loading2=true;
         this.$axios({
             method:'put',
-            url:'/platform/hospital/rubbish/editType?id='+this.editId+'&typeid='+this.ruleForm.type,
+            url:'/platform/hospital/rubbish/editType?id='+this.editId+'&typeId='+this.ruleForm.type,
         }).then((res) =>{
             if(res.status==200){
                this.loading2=false;
                this.editVisible=false;
+               this.getDetailTable(this.storeTime);
             }else{
                 this.$message.error(res.data.msg);
             }
