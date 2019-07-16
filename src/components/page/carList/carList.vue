@@ -23,7 +23,7 @@
             </div>
             <el-button
               style="margin-left:10px"
-              @click="search"
+              @click="getData"
               type="primary"
               icon="el-icon-search"
             >搜索</el-button>
@@ -41,9 +41,9 @@
             v-loading="loading"
           >
           <el-table-column type="index" label="序号" align="center" width="55"></el-table-column>
-          <el-table-column prop="name1"  label="回收车名称" align="center" ></el-table-column>
+          <el-table-column prop="name"  label="回收车名称" align="center" ></el-table-column>
           <el-table-column prop="weight"  label="回收车重量" align="center" ></el-table-column>
-          <el-table-column prop="name2"  label="回收员姓名" align="center"  ></el-table-column>
+          <el-table-column prop="username"  label="回收员姓名" align="center"  ></el-table-column>
           <el-table-column  label="操作" width="100px" align="center" > 
                 <template slot-scope="scope">
                         <span class="pointer"  @click="detials(scope.$index, scope.row)">编辑</span>
@@ -65,14 +65,14 @@
     <!-- 编辑弹出框 -->
     <el-dialog :title="mTitle" :visible.sync="editVisible" width="40%"  >
         <el-form ref="ruleForm"  :model="ruleForm"  :rules="rules" label-width="120px" v-loading="loading1"  >
-            <el-form-item label="回收车名称：" prop="name1" required>
-                  <el-input v-model="ruleForm.name1" ></el-input>
+            <el-form-item label="回收车名称：" prop="name" required>
+                  <el-input v-model="ruleForm.name" ></el-input>
             </el-form-item>
             <el-form-item label="回收车重量：" prop="weight" required>
                   <el-input v-model="ruleForm.weight" ></el-input>
             </el-form-item>
-            <el-form-item label="绑定回收员：" prop="name2" required>
-                  <el-select style="width:100%" v-model="ruleForm.name2" placeholder="请选择角色">
+            <el-form-item label="绑定回收员：" prop="recyclerId" required>
+                  <el-select style="width:100%" v-model="ruleForm.recyclerId" placeholder="请选择角色">
                      <el-option
                       v-for="item in users"
                       :key="item.value"
@@ -113,8 +113,8 @@ export default {
       tableData: [
         {
           id: 1,
-          name1: "赛虹桥回收车",
-          name2: "垃圾回收员",
+          name: "赛虹桥回收车",
+          username: "垃圾回收员",
           weight:12.1
         }
       ],
@@ -122,15 +122,15 @@ export default {
       cur_page: 1,
       editVisible:false,
       ruleForm:{
-        name1:'',
-        name2:'',
+        name:'',
+        recyclerId:'',
         weight:""
       },
       rules: {
-          name1: [
+          name: [
               { required: true, message: '请输入回收车名称' }
           ],
-          name2: [
+          recyclerId: [
               { required: true, message: '请选择' }
           ],
           weight: [
@@ -156,63 +156,123 @@ export default {
     search() {
       console.log(this.date);
     },
-    openAdd(type){
-      if(type==1){
-        this.mTitle='新增'
+    openAdd(type,row){
+       if(type==1){
+        this.mTitle='新增';
+        this.ruleForm={
+             name:'',
+             roleName:''
+        };
+        if(this.$refs['ruleForm']){
+           this.$refs['ruleForm'].resetFields();
+        }
       }else{
-        this.mTitle='详情'
+        this.mTitle='详情';
+        var form=this.ruleForm;
+        for(var key in row){
+          form[key]=row[key]
+        }
+        this.ruleForm=form;
       }
       this.editVisible=true;
     },
-    detials(){
-      this.openAdd(2);
+    detials(index,row){
+      this.openAdd(2,row);
     },
     // 保存编辑
     saveEdit(formName) {
         this.$refs[formName].validate((valid) => {
             if (valid) {
+              if(this.mTitle=='新增'){
                 this.add()
+              }else{
+                this.edit()
+              }
             } else {
                 return false;
             }
         });
     },
+     // 编辑
+    edit(){
+        this.loading1=true;
+        this.$axios({
+              method:'put',
+              url:'/platform/hospital/car/editDo',
+              data:this.ruleForm
+          }).then((res) =>{
+              if(res.data.code==0){
+                  this.loading1=false;
+                  this.editVisible = false;
+                  this.getData()
+              }else{
+                  this.$message.error(res.data.msg);
+              }
+          }).catch((error) =>{
+              console.log(error)    
+        })
+    },
     // 添加
     add(){
         this.loading1=true;
-        // this.$axios({
-        //       method:'post',
-        //       url:'/api/customer/save',
-        //       data:this.$qs.stringify({
-        //           name:this.ruleForm.name,
-        //           key:this.ruleForm.key,
-        //           userIds:this.ruleForm.manager.join(','),
-        //           status:this.ruleForm.status,
-        //           xzProId:this.ruleForm.xzProId
-        //       })
-        //   }).then((res) =>{
-        //       if(res.data.code==200){
-        //       this.loading1=false;
-        //       this.editVisible = false;
-        //       this.getData()
-        //       }else{
-        //           this.$message.error(res.data.msg);
-        //       }
-        //   }).catch((error) =>{
-        //       console.log(error)    
-        //   })
+        this.$axios({
+              method:'post',
+              url:'/platform/hospital/car/addDo',
+              data:this.ruleForm
+          }).then((res) =>{
+              if(res.data.code==0){
+              this.loading1=false;
+              this.editVisible = false;
+              this.$message.success('添加成功');
+              this.getData()
+              }else{
+                  this.$message.error(res.data.msg);
+              }
+          }).catch((error) =>{
+              console.log(error)    
+          })
     },
     // 删除数据
     deleteRow(){
-
+      this.$axios({
+            method:'DELETE',
+            url:'/platform/hospital/car/delete?ids='+this.id,
+        }).then((res) =>{
+            if(res.status==200){
+                this.$message.success('删除成功');
+                this.delVisible=false;
+                this.getData();
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+      })
     },
     deal(index,row){
       this.id=row.id;
       this.delVisible=true;
-    }
+    },
+    getData(){
+        this.loading=true;
+        this.$axios({
+            method:'get',
+            url:'/platform/hospital/car/listPage?pageNumber='+this.cur_page+'&pageSize=10&name='+this.kName,
+        }).then((res) =>{
+            if(res.status==200){
+                this.loading=false;
+                this.tableData=res.data.list;
+                this.total=res.data.totalCount;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
   },
   mounted() {
- 
+    this.getData()
   }
 };
 </script>

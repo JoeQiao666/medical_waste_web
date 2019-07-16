@@ -105,8 +105,41 @@
     <!-- 编辑弹出框 -->
     <el-dialog :title="mTitle" :visible.sync="editVisible" width="40%"  >
         <el-form ref="ruleForm"  :model="ruleForm"  :rules="rules" label-width="120px" v-loading="loading1"  >
-            <el-form-item label="科室名称：" prop="name" required>
+            <el-form-item label="账号：" prop="name" required>
                   <el-input v-model="ruleForm.name" ></el-input>
+            </el-form-item>
+            <el-form-item label="姓名：" prop="name" required>
+                  <el-input v-model="ruleForm.name" ></el-input>
+            </el-form-item>
+            <el-form-item label="工号：" prop="name" required>
+                  <el-input v-model="ruleForm.name" ></el-input>
+            </el-form-item>
+            <el-form-item label="岗位：" prop="name" required>
+                   <el-select style="width:100%" v-model="ruleForm.recyclerId" placeholder="请选择">
+                     <el-option
+                      v-for="item in users"
+                      :key="item.value"
+                      :label="item.name"
+                       :value="item.value"
+                      >
+                    </el-option>
+                  </el-select>
+            </el-form-item>
+            <el-form-item label="科室：" prop="name" required>
+                   <el-select style="width:100%" v-model="ruleForm.recyclerId" placeholder="请选择">
+                     <el-option
+                      v-for="item in users"
+                      :key="item.value"
+                      :label="item.name"
+                       :value="item.value"
+                      >
+                    </el-option>
+                  </el-select>
+            </el-form-item>
+             <el-form-item label="工号：" prop="auth" required>
+                     <el-radio v-model="ruleForm.auth" label="0">无</el-radio>
+                     <el-radio v-model="ruleForm.auth" label="1">查看</el-radio>
+                     <el-radio v-model="ruleForm.auth" label="2">修改</el-radio>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer"  >
@@ -206,6 +239,13 @@ export default {
         {label:'管理员',id:2},
         {label:'垃圾回收员',id:3},
         {label:'暂存点复核员',id:4},
+      ],
+      users:[
+        {name:'超级管理员',value:'1'},
+        {name:'交接人',value:'2'},
+        {name:'回收员',value:'3'},
+        {name:'暂存点',value:'4'},
+        {name:'回收公司',value:'5'},
       ]
     };
   },
