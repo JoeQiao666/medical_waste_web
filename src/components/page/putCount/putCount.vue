@@ -337,14 +337,9 @@ export default {
           this.getTable();
     },
     // 点击切换页码二级
-    handleCurrentChange1(val){
-          this.cur_page1 = val;
-          // this.getTask();
-    },
-    // 点击切换页码三级
     handleCurrentChange2(val){
-          this.cur_page1 = val;
-          // this.getTask();
+          this.cur_page2 = val;
+          this.getDetailTable();
     },
     // 切换tab
     handleClick(tab, event) {
@@ -499,7 +494,7 @@ export default {
     getDetailTable(date){
         this.loading1=true;
         var url='';
-        this.activeName==1?url='/platform/hospital/rubbish/listPageByDate?formatType='+this.cType+'&date='+date+'&isBottle=false&status=1&pageNumber='+this.cur_page+'&pageSize=10':url='/platform/hospital/rubbish/listPageByDate?formatType='+this.cType+'&date='+date+'&isBottle=true&status=1&pageNumber='+this.cur_page+'&pageSize=10';
+        this.activeName==1?url='/platform/hospital/rubbish/listPageByDate?formatType='+this.cType+'&date='+date+'&isBottle=false&status=1&pageNumber='+this.cur_page2+'&pageSize=10':url='/platform/hospital/rubbish/listPageByDate?formatType='+this.cType+'&date='+date+'&isBottle=true&status=1&pageNumber='+this.cur_page2+'&pageSize=10';
         this.$axios({
             method:'get',
             url:url,
@@ -507,7 +502,7 @@ export default {
             if(res.status==200){
                this.loading1=false;
                this.tableData2=res.data.list;
-               this.total=res.data.totalCount;
+               this.total2=res.data.totalCount;
             }else{
                 this.$message.error(res.data.msg);
             }

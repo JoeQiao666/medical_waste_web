@@ -26,7 +26,7 @@
               <el-select style="width:140PX" v-model="jName" placeholder="请选择岗位">
                 <el-option
                   v-for="item in options"
-                  :key="item.value"
+                  :key="item.roleId"
                   :label="item.name"
                   :value="item.name">
                 </el-option>
@@ -105,41 +105,44 @@
     <!-- 编辑弹出框 -->
     <el-dialog :title="mTitle" :visible.sync="editVisible" width="40%"  >
         <el-form ref="ruleForm"  :model="ruleForm"  :rules="rules" label-width="120px" v-loading="loading1"  >
-            <el-form-item label="账号：" prop="name" required>
-                  <el-input v-model="ruleForm.name" ></el-input>
+            <el-form-item label="账号：" prop="loginname" required>
+                  <el-input v-model="ruleForm.loginname" ></el-input>
             </el-form-item>
-            <el-form-item label="姓名：" prop="name" required>
-                  <el-input v-model="ruleForm.name" ></el-input>
+            <el-form-item label="密码：" prop="password" required>
+                  <el-input v-model="ruleForm.password" ></el-input>
             </el-form-item>
-            <el-form-item label="工号：" prop="name" required>
-                  <el-input v-model="ruleForm.name" ></el-input>
+            <el-form-item label="姓名：" prop="username" required>
+                  <el-input v-model="ruleForm.username" ></el-input>
             </el-form-item>
-            <el-form-item label="岗位：" prop="name" required>
-                   <el-select style="width:100%" v-model="ruleForm.recyclerId" placeholder="请选择">
+            <el-form-item label="工号：" prop="jobNumber" required>
+                  <el-input v-model="ruleForm.jobNumber" ></el-input>
+            </el-form-item>
+            <el-form-item label="岗位：" prop="roleId" required>
+                   <el-select style="width:100%" v-model="ruleForm.roleId" placeholder="请选择">
                      <el-option
-                      v-for="item in users"
-                      :key="item.value"
+                      v-for="item in options"
+                      :key="item.roleId"
                       :label="item.name"
-                       :value="item.value"
+                       :value="item.roleId"
                       >
                     </el-option>
                   </el-select>
             </el-form-item>
-            <el-form-item label="科室：" prop="name" required>
-                   <el-select style="width:100%" v-model="ruleForm.recyclerId" placeholder="请选择">
+            <el-form-item label="科室：" prop="departmentId" required>
+                   <el-select style="width:100%" v-model="ruleForm.departmentId" placeholder="请选择">
                      <el-option
-                      v-for="item in users"
-                      :key="item.value"
+                      v-for="item in departments"
+                      :key="item.id"
                       :label="item.name"
-                       :value="item.value"
+                       :value="item.id"
                       >
                     </el-option>
                   </el-select>
             </el-form-item>
-             <el-form-item label="工号：" prop="auth" required>
-                     <el-radio v-model="ruleForm.auth" label="0">无</el-radio>
-                     <el-radio v-model="ruleForm.auth" label="1">查看</el-radio>
-                     <el-radio v-model="ruleForm.auth" label="2">修改</el-radio>
+             <el-form-item label="权限：" prop="permission">
+                     <el-radio v-model="ruleForm.permission" label="">无</el-radio>
+                     <el-radio v-model="ruleForm.permission" label="查看">查看</el-radio>
+                     <el-radio v-model="ruleForm.permission" label="修改">修改</el-radio>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer"  >
@@ -227,25 +230,37 @@ export default {
       cur_page: 1,
       editVisible:false,
       ruleForm:{
-        name:'',
+        loginname:'',
+        password:'',
+        username:'',
+        jobNumber:'',
+        departmentId:'',
+        roleId:'',
+        permission:'查看',
       },
       rules: {
-          name: [
-              { required: true, message: '请输入科室名称' }
+          loginname: [
+              { required: true, message: '请输入账号' }
+          ],
+          password: [
+              { required: true, message: '请输入密码' }
+          ],
+          username: [
+              { required: true, message: '请输入姓名' }
+          ],
+          jobNumber: [
+              { required: true, message: '请输入工号' }
+          ],
+          departmentId: [
+              { required: true, message: '请选择科室' }
+          ],
+          roleId: [
+              { required: true, message: '请选择岗位' }
           ],
       },
       options:[
-        {label:'护士',id:1},
-        {label:'管理员',id:2},
-        {label:'垃圾回收员',id:3},
-        {label:'暂存点复核员',id:4},
       ],
-      users:[
-        {name:'超级管理员',value:'1'},
-        {name:'交接人',value:'2'},
-        {name:'回收员',value:'3'},
-        {name:'暂存点',value:'4'},
-        {name:'回收公司',value:'5'},
+      departments:[
       ]
     };
   },
@@ -265,22 +280,44 @@ export default {
     search() {
       console.log(this.date);
     },
-    openAdd(type){
+    openAdd(type,row){
+      this.loading1=false;
       if(type==1){
-        this.mTitle='新增'
+        this.mTitle='新增';
+        this.ruleForm={
+              loginname:'',
+              password:'',
+              username:'',
+              jobNumber:'',
+              departmentId:'',
+              roleId:'',
+              permission:'查看',
+        };
+        if(this.$refs['ruleForm']){
+           this.$refs['ruleForm'].resetFields();
+        }
       }else{
-        this.mTitle='详情'
+        this.mTitle='详情';
+        var form=this.ruleForm;
+        for(var key in row){
+          form[key]=row[key]
+        }
+        this.ruleForm=form;
       }
       this.editVisible=true;
     },
-    detials(){
-      this.openAdd(2);
+    detials(index,row){
+      this.openAdd(2,row);
     },
     // 保存编辑
     saveEdit(formName) {
         this.$refs[formName].validate((valid) => {
             if (valid) {
+              if(this.mTitle=='新增'){
                 this.add()
+              }else{
+                this.edit()
+              }
             } else {
                 return false;
             }
@@ -289,31 +326,57 @@ export default {
     // 添加
     add(){
         this.loading1=true;
-        // this.$axios({
-        //       method:'post',
-        //       url:'/api/customer/save',
-        //       data:this.$qs.stringify({
-        //           name:this.ruleForm.name,
-        //           key:this.ruleForm.key,
-        //           userIds:this.ruleForm.manager.join(','),
-        //           status:this.ruleForm.status,
-        //           xzProId:this.ruleForm.xzProId
-        //       })
-        //   }).then((res) =>{
-        //       if(res.data.code==200){
-        //       this.loading1=false;
-        //       this.editVisible = false;
-        //       this.getData()
-        //       }else{
-        //           this.$message.error(res.data.msg);
-        //       }
-        //   }).catch((error) =>{
-        //       console.log(error)    
-        //   })
+        this.$axios({
+              method:'post',
+              url:'/platform/sys/user/addDo',
+              data:this.ruleForm,
+          }).then((res) =>{
+              if(res.data.code==0){
+              this.loading1=false;
+              this.editVisible = false;
+              this.getData()
+              }else{
+                  this.$message.error(res.data.msg);
+              }
+          }).catch((error) =>{
+              console.log(error)    
+          })
+    },
+     // 编辑
+    edit(){
+        this.loading1=true;
+        this.$axios({
+              method:'put',
+              url:'/platform/sys/user/editDo',
+              data:this.ruleForm
+          }).then((res) =>{
+              if(res.data.code==0){
+              this.loading1=false;
+              this.editVisible = false;
+              this.getData()
+              }else{
+                  this.$message.error(res.data.msg);
+              }
+          }).catch((error) =>{
+              console.log(error)    
+        })
     },
     // 删除数据
     deleteRow(){
-
+        this.$axios({
+              method:'DELETE',
+              url:'/platform/sys/user/delete?ids='+this.id,
+          }).then((res) =>{
+              if(res.status==200){
+                  this.$message.success('删除成功');
+                  this.delVisible=false;
+                  this.getData();
+              }else{
+                  this.$message.error(res.data.msg);
+              }
+          }).catch((error) =>{
+              console.log(error)    
+        })
     },
     deal(index,row){
       this.id=row.id;
@@ -362,6 +425,18 @@ export default {
         }).catch((error) =>{
             console.log(error)    
         })
+        this.$axios({
+            method:'get',
+            url:'/platform/hospital/department/data',
+        }).then((res) =>{
+            if(res.status==200){
+                this.departments=res.data.data;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
     },
     getData(){
         this.loading=true;
@@ -371,7 +446,10 @@ export default {
         }).then((res) =>{
             if(res.status==200){
                 this.loading=false;
-                this.tableData=res.data.list;
+                this.tableData=res.data.list.map((ele)=>{
+                  ele.permission=ele.permission?ele.permission:'';
+                  return ele
+                });
                 this.total=res.data.totalCount;
             }else{
                 this.$message.error(res.data.msg);

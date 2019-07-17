@@ -17,19 +17,20 @@
           v-loading="loading"
           >
           <el-table-column
-            prop="time"
+            prop="storeAt"
             align="center"
+            :formatter="timeFormatter"
             label="入库时间">
           </el-table-column>
             <el-table-column
-            prop="weight"
+            prop="reviewWeight"
             align="center"
             sortable
             label="复核重量"
           >
           </el-table-column>
           <el-table-column
-            prop="weight"
+            prop="updateWeight"
             align="center"
             sortable
             label="上传重量"
@@ -43,7 +44,7 @@
           >
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="username"
             align="center"
             label="操作人"
           >
@@ -64,10 +65,10 @@
     </div>
 
       <!-- 详情弹出框 -->
-    <el-dialog title="导入科室" :visible.sync="visible" width="40%"  >
+    <el-dialog title="入库信息" :visible.sync="visible" width="40%"  >
         <el-form   label-width="120px"  >
-            <el-form-item label="文件："  >
-                 <el-input value="detail" ></el-input>
+            <el-form-item label="异常原因："  >
+                 <el-input readonly :value="detail" ></el-input>
             </el-form-item>
         </el-form>
     </el-dialog>
@@ -75,6 +76,7 @@
 </template>
 
 <script>
+const moment = require("moment");
 export default {
   data() {
     return {
@@ -94,7 +96,10 @@ export default {
      // 点击切换页码
     handleCurrentChange(val){
           this.cur_page = val;
-          // this.getTask();
+          this.getData();
+    },
+    timeFormatter(row){
+          return moment(row.storeAt).format('YYYY-MM-DD HH:mm:ss')
     },
     formatter(row){
       var is=''
@@ -108,11 +113,27 @@ export default {
     detials(index,row){
       this.detail=row.detail;
       this.visible=true;
-    }
+    },
+    getData(){
+        this.loading=true;
+        this.$axios({
+            method:'get',
+            url:'/platform/hospital/record/listPage?pageNumber='+this.cur_page+'&pageSize=10',
+        }).then((res) =>{
+            if(res.status==200){
+                this.loading=false;
+                this.tableData=res.data.list;
+                this.total=res.data.totalCount;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
   },
   mounted() {
-
- 
+       this.getData()
   }
 };
 </script>
