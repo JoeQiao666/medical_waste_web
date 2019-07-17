@@ -94,13 +94,13 @@
                             {
                                 index: '/traceCode',
                                 icon: 'fa fa-dot-circle-o',
-                                title: '溯源码申请'
+                                title: '溯源码列表'
                             },
-                            {
-                                index: '/codeAnalyze',
-                                icon: 'fa fa-dot-circle-o',
-                                title: '溯源码统计分析'
-                            }
+                            // {
+                            //     index: '/codeAnalyze',
+                            //     icon: 'fa fa-dot-circle-o',
+                            //     title: '溯源码统计分析'
+                            // }
                             ]
                     },
                     {

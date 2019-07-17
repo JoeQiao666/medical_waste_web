@@ -5,7 +5,7 @@
         <el-breadcrumb-item>
           <i class="el-icon-location-outline"></i> 统计分析
         </el-breadcrumb-item>
-        <el-breadcrumb-item>溯源码申请</el-breadcrumb-item>
+        <el-breadcrumb-item>溯源码列表</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="container">
@@ -13,12 +13,12 @@
         <div class="flex headSelect" style="margin-bottom:10px;">
           <div class="flex">
             <img class="titleIcon" src="../../../assets/img/form.png" alt />
-            <div style="margin-top: -4px;">溯源码申请</div>
+            <div style="margin-top: -4px;">溯源码列表</div>
           </div>
 
           <div class="flex funcHead">
             <div class="block">
-              <span class="demonstration">申请时间：</span>
+              <span class="demonstration">时间：</span>
               <el-date-picker
                 style="width:280px"
                 v-model="date"
@@ -32,18 +32,18 @@
             <div class="block">
               <span class="demonstration" style="margin-left:10px" >状态</span>
                <el-select style="width:100px" v-model="status" placeholder="请选择">
-                  <el-option label="全部" value="all"></el-option>
-                  <el-option label="已申请" value="h1"></el-option>
-                  <el-option label="已发放" value="h2"></el-option>
+                  <el-option label="科室出库" value="0"></el-option>
+                  <el-option label="暂存点入库" value="1"></el-option>
+                  <el-option label="暂存点出库" value="2"></el-option>
                 </el-select>
             </div>
             <el-button
               style="margin-left:10px"
-              @click="search"
+              @click="getData"
               type="primary"
               icon="el-icon-search"
             >搜索</el-button>
-            <el-button
+            <!-- <el-button
               style="margin-left:10px"
               @click="openAdd"
               type="primary"
@@ -54,21 +54,60 @@
               @click="getExcel"
               type="primary"
               icon="el-icon-download"
-            >导出报表</el-button>
+            >导出报表</el-button> -->
           </div>
         </div>
-        <el-table
-            :data="tableData"
-            style="width: 100%"
-            v-loading="loading"
-          >
-          <el-table-column type="index" label="序号" width="55"></el-table-column>
-          <el-table-column prop="count" sortable label="申请数量"></el-table-column>
-          <el-table-column prop="name"  label="申请人" ></el-table-column>
-          <el-table-column prop="phone"  label="联系方式" ></el-table-column>
-          <el-table-column prop="time" label="申请时间" sortable ></el-table-column>
-          <el-table-column prop="status" label="状态" sortable :formatter="formatter"></el-table-column>
-        </el-table>
+         <el-table
+              :data="tableData"
+              style="width: 100%"
+              v-loading="loading2"
+              >
+              <el-table-column
+                type="index"
+                label="序号"
+                sortable
+                width="80">
+              </el-table-column>
+              <el-table-column
+                prop="createdTime"
+                sortable
+                label="新增时间"
+                width="160">
+              </el-table-column>
+                <el-table-column
+                prop="departmentName"
+                label="科室">
+              </el-table-column>
+                <el-table-column
+                prop="weight"
+                sortable
+                label="重量"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="typeName"
+                sortable
+                label="类型"
+              >
+              </el-table-column>
+            
+              <el-table-column
+                prop="status"
+                label="记录状态"
+                :formatter="formatter"
+                >
+              </el-table-column>
+              <el-table-column
+                prop="operatorName"
+                label="操作人"
+                >
+              </el-table-column>
+              <el-table-column
+                prop="staffName"
+                label="交接人"
+                >
+              </el-table-column>
+            </el-table>
         <div class="pagination">
           <el-pagination
             background
@@ -109,7 +148,7 @@ export default {
     return {
       loading: false,
       loading1: false,
-      status:'all',
+      status:'',
       startYear: "",
       endYear: "",
       activeName: "1",
@@ -182,20 +221,22 @@ export default {
     }
   },
   methods: {
-    // status格式化
+     // status格式化
     formatter(row, column) {
-      var w = row.status;
-      if (w == 1) {
-        w = "已申请";
-      }else{
-        w = "已发放";
-      }
-      return w;
+              var is='';
+              if(row.status==0){
+                  is='科室出库';
+              }else if(row.status==1){
+                  is='暂存点入库';
+              }else{
+                  is='暂存点出库';
+              }
+              return is;
     },
     // 点击切换页码
     handleCurrentChange(val) {
       this.cur_page = val;
-      // this.getTask();
+      this.getData();
     },
     // 导出报表
     getExcel(type) {},
@@ -217,61 +258,23 @@ export default {
       }
       this.date = d;
     },
-    openAdd(){
-      this.editVisible=true;
-    },
-    // 保存编辑
-    saveEdit(formName) {
-        this.$refs[formName].validate((valid) => {
-            if (valid) {
-                this.add()
-            } else {
-                return false;
-            }
-        });
-    },
-    // 添加
-    add(){
-        this.loading1=true;
-        // this.$axios({
-        //       method:'post',
-        //       url:'/api/customer/save',
-        //       data:this.$qs.stringify({
-        //           name:this.ruleForm.name,
-        //           key:this.ruleForm.key,
-        //           userIds:this.ruleForm.manager.join(','),
-        //           status:this.ruleForm.status,
-        //           xzProId:this.ruleForm.xzProId
-        //       })
-        //   }).then((res) =>{
-        //       if(res.data.code==200){
-        //       this.loading1=false;
-        //       this.editVisible = false;
-        //       this.getData()
-        //       }else{
-        //           this.$message.error(res.data.msg);
-        //       }
-        //   }).catch((error) =>{
-        //       console.log(error)    
-        //   })
-    },
-    getData(){
+   getData(){
         this.loading=true;
         this.$axios({
             method:'get',
-            url:'',
+            url:'/platform/hospital/rubbish/listPage?isBottle=true&pageNumber='+this.cur_page+'&pageSize=10&start='+this.date[0]+'&end='+this.date[1]+'&status='+this.status,
         }).then((res) =>{
             if(res.status==200){
-               this.loading=false;
-               this.tableData2=res.data.list;
-               this.total=res.data.totalCount;
+                this.loading=false;
+                this.tableData=res.data.list;
+                this.total=res.data.totalCount;
             }else{
                 this.$message.error(res.data.msg);
             }
         }).catch((error) =>{
             console.log(error)    
         })
-    }
+   }
   },
   mounted() {
     var end = moment().format("YYYY-MM-DD"),
@@ -279,6 +282,7 @@ export default {
         .subtract(30, "days")
         .format("YYYY-MM-DD");
     this.date = [start, end];
+    this.getData();
   }
 };
 </script>

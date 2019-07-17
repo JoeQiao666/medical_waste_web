@@ -74,10 +74,10 @@
             <el-form-item label="绑定回收员：" prop="recyclerId" required>
                   <el-select style="width:100%" v-model="ruleForm.recyclerId" placeholder="请选择角色">
                      <el-option
-                      v-for="item in users"
-                      :key="item.value"
-                      :label="item.name"
-                       :value="item.value"
+                      v-for="item in options1"
+                      :key="item.id"
+                      :label="item.username"
+                       :value="item.id"
                       >
                     </el-option>
                   </el-select>
@@ -137,12 +137,8 @@ export default {
               { required: true, message: '请输入回收车重量' }
           ],
       },
-      users:[
-        {name:'超级管理员',value:'1'},
-        {name:'交接人',value:'2'},
-        {name:'回收员',value:'3'},
-        {name:'暂存点',value:'4'},
-        {name:'回收公司',value:'5'},
+      options1:[
+
       ]
     };
   },
@@ -253,6 +249,20 @@ export default {
       this.id=row.id;
       this.delVisible=true;
     },
+    getPerson(){
+        this.$axios({
+            method:'get',
+            url:'/platform/sys/user/data?roleId=1',
+        }).then((res) =>{
+            if(res.status==200){
+                this.options1=res.data;
+            }else{
+                this.$message.error(res.data.msg);
+            }
+        }).catch((error) =>{
+            console.log(error)    
+        })
+    },
     getData(){
         this.loading=true;
         this.$axios({
@@ -272,6 +282,7 @@ export default {
     },
   },
   mounted() {
+    this.getPerson();
     this.getData()
   }
 };
