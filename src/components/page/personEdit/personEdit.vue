@@ -303,6 +303,10 @@ export default {
           form[key]=row[key]
         }
         this.ruleForm=form;
+        this.ruleForm.password='';
+        if(this.$refs['ruleForm']){
+           this.$refs['ruleForm'].resetFields();
+        }
       }
       this.editVisible=true;
     },

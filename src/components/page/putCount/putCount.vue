@@ -269,7 +269,7 @@ export default {
       total2:0,
       vFormate:'yyyy-MM-dd',
       cur_page:1,
-      cur_page1:1,
+      cur_page2:1,
       chooseIds:[],
       tableVisble1:false,
       tableVisble2:false,

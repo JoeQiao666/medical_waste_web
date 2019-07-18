@@ -206,7 +206,7 @@ export default {
         this.loading1=true;
         this.$axios({
               method:'put',
-              url:'/platform/hospital/company/editDo',
+              url:'/platform/hospital/position/editDo',
               data:this.ruleForm
           }).then((res) =>{
               if(res.data.code==0){

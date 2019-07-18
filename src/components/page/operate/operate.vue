@@ -121,7 +121,7 @@
 
               <div align="center" >
                 <el-button @click="addIn(1)" type="primary">全部入库</el-button>
-                <el-button @click="addIn(1)" type="primary">确认入库</el-button>
+                <el-button @click="addIn(2)" type="primary">确认入库</el-button>
               </div>
           </el-tab-pane>
         </el-tabs>
@@ -316,7 +316,7 @@ export default {
         this.loading=true;
         this.$axios({
             method:'get',
-            url:'/platform/hospital/rubbish/listPage?isBottle=true&pageNumber='+this.cur_page+'&pageSize=10',
+            url:'/platform/hospital/rubbish/listPage?isBottle=true&pageNumber='+this.cur_page+'&pageSize=10&status=0',
         }).then((res) =>{
             if(res.status==200){
                 this.loading=false;
