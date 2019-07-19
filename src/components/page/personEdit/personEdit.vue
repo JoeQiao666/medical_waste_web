@@ -85,9 +85,9 @@
           <el-table-column prop="time" :formatter="timeFormate"  label="修改时间" width="140"  ></el-table-column>
           <el-table-column  label="操作" width="150px"  > 
                 <template slot-scope="scope">
-                        <span class="pointer"  @click="detials(scope.$index, scope.row)">编辑</span>
-                        <span class="pointer" style="margin-left:10px"  @click="deal(scope.$index, scope.row)">删除</span>
-                        <span class="pointer" style="margin-left:10px"  @click="reset(scope.$index, scope.row)">重置密码</span>
+                        <span class="pointer"  @click="detials(scope.$index, scope.row)"  >编辑</span>
+                        <span class="pointer" style="margin-left:10px"   @click="deal(scope.$index, scope.row)">删除</span>
+                        <!-- <span class="pointer" style="margin-left:10px"  @click="reset(scope.$index, scope.row)">重置密码</span> -->
                  </template>
           </el-table-column>
         </el-table>
@@ -297,16 +297,16 @@ export default {
            this.$refs['ruleForm'].resetFields();
         }
       }else{
+        this.ruleForm.password='';
+        if(this.$refs['ruleForm']){
+           this.$refs['ruleForm'].resetFields();
+        }
         this.mTitle='详情';
         var form=this.ruleForm;
         for(var key in row){
           form[key]=row[key]
         }
         this.ruleForm=form;
-        this.ruleForm.password='';
-        if(this.$refs['ruleForm']){
-           this.$refs['ruleForm'].resetFields();
-        }
       }
       this.editVisible=true;
     },

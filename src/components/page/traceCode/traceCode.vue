@@ -60,7 +60,7 @@
          <el-table
               :data="tableData"
               style="width: 100%"
-              v-loading="loading2"
+              v-loading="loading"
               >
               <el-table-column
                 type="index"
