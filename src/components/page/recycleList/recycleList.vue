@@ -337,10 +337,12 @@ export default {
             if(res.status==200){
                 this.loading=false;
                 this.tableData=res.data.list.map((ele)=>{
+                  if(ele.city&&ele.city.indexOf('{')!==-1){
                     ele.region=['320100',JSON.parse(ele.city).value,JSON.parse(ele.county).value];
                     ele.city=JSON.parse(ele.city).name;
                     ele.county=JSON.parse(ele.county).name;
-                    return ele
+                  }
+                   return ele
                 });
                 this.total=res.data.totalCount;
             }else{

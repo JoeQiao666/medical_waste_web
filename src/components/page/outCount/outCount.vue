@@ -171,28 +171,28 @@
           <div>
              <div class="ball" style="background:#67C23A" >科室出库</div>
              <div class="infoBox infoBox1">
-                <div><span>所属类型：</span> 感染性</div>
-                <div><span>垃圾重量：</span> 4.48kg </div>
-                <div><span>垃圾回收员：</span> 回收员1</div>
-                <div><span>垃圾回收时间：</span> 2019-07-04 15:52</div>
-                <div><span>垃圾交接人：</span> 姜柳柳</div>
+                <div><span>所属类型：</span> {{details.typeName}}</div>
+                <div><span>垃圾重量：</span> {{details.weight}}kg </div>
+                <div><span>垃圾回收员：</span> {{details.recyclerName}}</div>
+                <div><span>垃圾回收时间：</span> {{details.createdTime}}</div>
+                <div><span>垃圾交接人：</span> {{details.staffName}}</div>
                 <div><span>异常信息：</span> -</div>
              </div>
           </div>
           <div>
-             <div class="ball" style="background:#E6A23C" >暂存点出库</div>
+             <div class="ball" style="background:#E6A23C" >暂存点入库</div>
              <div class="infoBox">
-                <div><span>暂存点交接人：</span> 暂存点复核员</div>
-                <div><span>暂存点出库时间：</span> 2019-07-04 16:10 </div>
-                <div><span>暂存点核对重量：</span> 4.48kg</div>
+                <div><span>暂存点交接人：</span> {{details.administratorName}}</div>
+                <div><span>暂存点入库时间：</span> {{details.storeTime}}</div>
+                <div><span>暂存点核对重量：</span> {{details.weight}}kg</div>
              </div>
           </div>
           <div>
              <div class="ball" style="background:#F56C6C" >暂存点出库</div>
              <div class="infoBox">
-                <div><span>所属回收公司：</span> -</div>
+                <div><span>所属回收公司：</span> {{details.companyName}}</div>
                 <div><span>回收公司回收员：</span>- </div>
-                <div><span>回收时间：</span>-</div>
+                <div><span>回收时间：</span>{{details.recycleTime}}</div>
              </div>
           </div>
       </div>
@@ -248,13 +248,27 @@ export default {
       tableVisble1:false,
       tableVisble2:false,
       editVisible:false,
-      ruleForm:{type:''}
+      ruleForm:{type:''},
+      details:{
+        administratorId:'',
+        typeName:'',
+        weight:'',
+        staffName:'',
+        recycleTime:'',
+        createdTime:'',
+        companyName:"",
+        administratorName :"",
+        administratorName :"",
+      }
     }
   },
   methods: {
     // 重量格式化
     formatter(row, column) {
-      var w=row[column.property]
+      var w=row[column.property];
+      if(w==undefined){
+          return '-';
+      }
       if(w==''){
         w='0kg'
       }else{
@@ -345,7 +359,7 @@ export default {
             sums[index] = values.reduce((prev, curr) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                return prev + curr;
+               return (prev*100 + curr*100)/100;
               } else {
                 return prev;
               }
@@ -382,6 +396,9 @@ export default {
          this.storeTime=row.storeTime;
          this.getDetailTable(row.storeTime);
        }else if(t==2){
+         row.storeTime=moment(parseFloat(row.storeAt)).format('YYYY-MM-DD HH:mm:ss');
+         row.recycleTime=moment(parseFloat(row.recycleAt)).format('YYYY-MM-DD HH:mm:ss');
+         this.details=row;
          this.tableVisble2=true;
        }
     },
@@ -533,7 +550,7 @@ export default {
   margin: auto;
 }
 .infoBox{
-  padding-left: 25%;
+  padding-left: 22%;
   margin:20px 0;
 }
 .infoBox span{
