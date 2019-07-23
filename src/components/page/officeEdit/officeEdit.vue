@@ -107,8 +107,8 @@
     </el-dialog>
    
    <!-- 上传弹出框 -->
-    <el-dialog title="导入科室" :visible.sync="visible" width="40%"  >
-        <el-form ref="ruleForm"   label-width="120px" v-loading="loading1"  >
+    <el-dialog title="导入科室" :visible.sync="visible" width="40%"   v-loading="loading2">
+        <el-form ref="ruleForm"   label-width="120px"   >
             <el-form-item label="文件："  >
                   <el-upload
                     ref="upload"
@@ -116,6 +116,7 @@
                     accept=".xls"
                     :limit="1"
                     :auto-upload="false"
+                    :on-change="inputChange"
                     action="https://jsonplaceholder.typicode.com/posts/"
                    >
                     <el-button size="small" type="primary">点击上传</el-button>
@@ -149,11 +150,17 @@
 <script>
 const moment = require("moment");
 import vCode from '../../common/qrcode.vue';
+const make_cols = refstr => Array(XLSX.utils.decode_range(refstr).e.c + 1).fill(0).map((x,i) => ({name:XLSX.utils.encode_col(i), key:i}));
+const _SheetJSFT = [
+	"xlsx", "xlsb", "xlsm", "xls", "xml", "csv", "txt", "ods", "fods", "uos", "sylk", "dif", "dbf", "prn", "qpw", "123", "wb*", "wq*", "html", "htm"
+].map(function(x) { return "." + x; }).join(",");
+import XLSX from 'xlsx';
 export default {
   data() {
     return {
       loading: false,
       loading1: false,
+      loading2: false,
       delVisible: false,
       visible: false,
       codeVisible: false,
@@ -237,6 +244,26 @@ export default {
             }
         });
     },
+    // 批量添加
+    allAdd(data){
+        this.loading=true;
+        this.$axios({
+              method:'post',
+              url:'/platform/hospital/department/batch',
+              data:data
+          }).then((res) =>{
+              if(res.data.code==0){
+              this.loading=false;
+              this.visible = false;
+              this.$message.error('添加成功');
+              this.getData()
+              }else{
+                  this.$message.error(res.data.msg);
+              }
+          }).catch((error) =>{
+              console.log(error)    
+          })
+    },
     // 添加
     add(){
         this.loading1=true;
@@ -277,6 +304,35 @@ export default {
               console.log(error)    
         })
     },
+    inputChange(file){
+      const reader = new FileReader();
+			reader.onload = (e) => {
+				/* Parse data */
+				const bstr = e.target.result;
+				const wb = XLSX.read(bstr, {type:'binary'});
+				/* Get first worksheet */
+				const wsname = wb.SheetNames[0];
+				const ws = wb.Sheets[wsname];
+				/* Convert array of arrays */
+				const data = XLSX.utils.sheet_to_json(ws, {header:1});
+        /* Update state */
+        data.shift();
+        if(data[0]&&data[0].length!==1){
+            this.$message('模板格式错误');
+            this.$refs.upload.clearFiles();
+            return 
+        }else if(!data[0]){
+            this.$message('空模板');
+            this.$refs.upload.clearFiles();
+            return 
+        }
+        var arr=data.map((ele)=>{
+            return{"name":ele[0]}
+        })
+        this.allAdd(arr)
+			};
+			reader.readAsBinaryString(file.raw);
+    },
     // 删除数据
     deleteRow(){
         this.$axios({
@@ -305,7 +361,8 @@ export default {
       this.visible=true
     },
     uploads(){
-      this.$refs.upload.submit();
+      // this.$refs.upload.submit();
+      console.log( this.$refs.upload)
     },
     qrCode(index,row){
         this.codeText={id:row.id,name:row.name}
@@ -349,8 +406,9 @@ export default {
 }
 
 .upload-demo /deep/ .el-upload--text{
-  height:40px;
+  height:46px;
   width:100%;
+  padding:5px 0;
 }
 
 </style>

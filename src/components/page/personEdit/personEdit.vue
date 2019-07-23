@@ -152,7 +152,7 @@
     </el-dialog>
 
     <!-- 删除提示框 -->
-    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
+    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center  >
         <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
         <span slot="footer" class="dialog-footer">
             <el-button @click="delVisible = false">取 消</el-button>
@@ -161,8 +161,8 @@
     </el-dialog>
    
    <!-- 上传弹出框 -->
-    <el-dialog title="导入科室" :visible.sync="visible" width="40%"  >
-        <el-form ref="ruleForm"   label-width="120px" v-loading="loading1"  >
+    <el-dialog title="导入人员" :visible.sync="visible" width="40%"  >
+        <el-form ref="ruleForm"   label-width="120px" v-loading="loading2"  >
             <el-form-item label="文件："  >
                   <el-upload
                     ref="upload"
@@ -170,6 +170,7 @@
                     accept=".xls"
                     :limit="1"
                     :auto-upload="false"
+                    :on-change="inputChange"
                     action="https://jsonplaceholder.typicode.com/posts/"
                    >
                     <el-button size="small" type="primary">点击上传</el-button>
@@ -203,11 +204,17 @@
 <script>
 const moment = require("moment");
 import vCode from '../../common/qrcode.vue';
+const make_cols = refstr => Array(XLSX.utils.decode_range(refstr).e.c + 1).fill(0).map((x,i) => ({name:XLSX.utils.encode_col(i), key:i}));
+const _SheetJSFT = [
+	"xlsx", "xlsb", "xlsm", "xls", "xml", "csv", "txt", "ods", "fods", "uos", "sylk", "dif", "dbf", "prn", "qpw", "123", "wb*", "wq*", "html", "htm"
+].map(function(x) { return "." + x; }).join(",");
+import XLSX from 'xlsx';
 export default {
   data() {
     return {
       loading: false,
       loading1: false,
+      loading2: false,
       delVisible: false,
       visible: false,
       codeVisible: false,
@@ -382,6 +389,55 @@ export default {
               console.log(error)    
         })
     },
+    // 批量添加
+    allAdd(data){
+        this.loading2=true;
+        this.$axios({
+              method:'post',
+              url:'/platform/sys/user/batch',
+              data:data
+          }).then((res) =>{
+              if(res.data.code==0){
+              this.loading2=false;
+              this.visible = false;
+              this.$message.error('添加成功');
+              this.getData()
+              }else{
+                  this.$message.error(res.data.msg);
+              }
+          }).catch((error) =>{
+              console.log(error)    
+          })
+    },
+    inputChange(file){
+      const reader = new FileReader();
+			reader.onload = (e) => {
+				/* Parse data */
+				const bstr = e.target.result;
+				const wb = XLSX.read(bstr, {type:'binary'});
+				/* Get first worksheet */
+				const wsname = wb.SheetNames[0];
+				const ws = wb.Sheets[wsname];
+				/* Convert array of arrays */
+				const data = XLSX.utils.sheet_to_json(ws, {header:1});
+        /* Update state */
+        data.shift();
+        if(data[0]&&data[0].length!==7){
+            this.$message('模板格式错误');
+            this.$refs.upload.clearFiles();
+            return 
+        }else if(!data[0]){
+            this.$message('空模板');
+            this.$refs.upload.clearFiles();
+            return 
+        }
+        var arr=data.map((ele)=>{
+            return{loginname:ele[0],password:ele[1],username:ele[2],jobNumber:ele[3],roleId:ele[4],departmentId:ele[5],permission:ele[6]=='无'?'':ele[6]}
+        })
+        this.allAdd(arr)
+			};
+			reader.readAsBinaryString(file.raw);
+    },
     deal(index,row){
       this.id=row.id;
       this.delVisible=true;
@@ -481,8 +537,9 @@ export default {
 }
 
 .upload-demo /deep/ .el-upload--text{
-  height:40px;
+  height:46px;
   width:100%;
+  padding:5px 0;
 }
 
 </style>
