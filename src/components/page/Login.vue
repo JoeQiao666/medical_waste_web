@@ -79,8 +79,13 @@
                             }).then((response) =>{    
                                 if(response.data.code==0){
                                     localStorage.setItem('ms_username',this.ruleForm.username);
-                                    // localStorage.setItem('token',response.data.data);
-                                    this.$router.push('/');
+                                    if(response.data.data.permission){
+                                         localStorage.setItem('permission',response.data.data.permission);
+                                        this.$router.push('/');
+                                    }else{
+                                         this.$message('没有访问权限');
+                                    }
+                                
                                 }else{
                                     this.$message.error(response.data.msg);
                                 }     

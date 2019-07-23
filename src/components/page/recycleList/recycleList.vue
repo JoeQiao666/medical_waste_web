@@ -32,6 +32,7 @@
               @click="openAdd(1)"
               type="primary"
               icon="el-icon-plus"
+              v-if="permission=='修改'"
             >新增</el-button>
           </div>
         </div>
@@ -49,7 +50,7 @@
           <el-table-column  label="操作" width="100px">
                 <template slot-scope="scope">
                         <span class="pointer"  @click="detials(scope.$index, scope.row)">详情</span>
-                        <span class="pointer" style="margin-left:10px"  @click="deal(scope.$index, scope.row)">删除</span>
+                        <span class="pointer" style="margin-left:10px"  v-if="permission=='修改'"  @click="deal(scope.$index, scope.row)">删除</span>
                  </template>
           </el-table-column>
         </el-table>
@@ -108,7 +109,7 @@
         </el-form>
         <span slot="footer" class="dialog-footer"  >
             <el-button @click="editVisible = false">取 消</el-button>
-            <el-button type="primary" @click="saveEdit('ruleForm')">确 定</el-button>
+            <el-button  v-if="permission=='修改'" type="primary" @click="saveEdit('ruleForm')">确 定</el-button>
         </span>
     </el-dialog>
 
@@ -144,6 +145,7 @@ export default {
       total: 0,
       cur_page: 1,
       editVisible:false,
+      permission:false,
       ruleForm:{
         region:'',
         name:'',
@@ -354,7 +356,8 @@ export default {
     }
   },
   mounted() {
-    this.getData()
+    this.getData();
+    this.permission=localStorage.permission;
   }
 };
 </script>

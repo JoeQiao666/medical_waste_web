@@ -224,6 +224,7 @@ export default {
       loading: false,
       loading1: false,
       loading2: false,
+      permission:false,
       dateType:'daterange',
       types:[],
       columns:[],
@@ -501,6 +502,7 @@ export default {
     }
   },
   mounted() {
+     this.permission=localStorage.permission;
      var end=moment().format('YYYY-MM-DD'),start=moment().subtract(30, 'days').format('YYYY-MM-DD');
      this.date=[start,end];
      this.getTable();

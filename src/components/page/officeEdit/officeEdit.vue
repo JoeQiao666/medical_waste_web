@@ -44,12 +44,14 @@
               @click="upload()"
               type="primary"
               icon="el-icon-upload2"
+              v-if="permission=='修改'"
             >导入</el-button>
             <el-button
               style="margin-left:10px"
               @click="openAdd(1)"
               type="primary"
               icon="el-icon-plus"
+              v-if="permission=='修改'"
             >新增</el-button>
           </div>
         </div>
@@ -68,8 +70,8 @@
           <el-table-column prop="time"  label="修改时间" align="center"  ></el-table-column>
           <el-table-column  label="操作" width="100px" align="center" > 
                 <template slot-scope="scope">
-                        <span class="pointer"  @click="detials(scope.$index, scope.row)">编辑</span>
-                        <span class="pointer" style="margin-left:10px"  @click="deal(scope.$index, scope.row)">删除</span>
+                        <span class="pointer"  v-if="permission=='修改'"  @click="detials(scope.$index, scope.row)">编辑</span>
+                        <span class="pointer"  v-if="permission=='修改'" style="margin-left:10px"  @click="deal(scope.$index, scope.row)">删除</span>
                  </template>
           </el-table-column>
         </el-table>
@@ -164,6 +166,7 @@ export default {
       delVisible: false,
       visible: false,
       codeVisible: false,
+      permission:false,
       codeText:'',
       kName:'',
       mTitle:'新增',
@@ -390,6 +393,7 @@ export default {
     }
   },
   mounted() {
+    this.permission=localStorage.permission;
     this.getData()
   }
 };

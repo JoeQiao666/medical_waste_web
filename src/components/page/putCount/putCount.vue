@@ -182,7 +182,7 @@
                  width="150" align="center">
                  <template slot-scope="scope">
                         <span class="pointer"  @click="detials(scope.$index, scope.row,2)">查看详情</span>
-                        <span style="margin-left:10px" class="pointer"  @click="edit(scope.$index, scope.row)">编辑</span>
+                        <span style="margin-left:10px"  v-if="permission=='修改'" class="pointer"  @click="edit(scope.$index, scope.row)">编辑</span>
                  </template>
               </el-table-column>
           </el-table>
@@ -250,6 +250,7 @@ export default {
       loading: false,
       loading1: false,
       loading2: false,
+      permission:false,
       dateType:'daterange',
       types:[],
       columns:[],
@@ -545,6 +546,7 @@ export default {
     }
   },
   mounted() {
+     this.permission=localStorage.permission;
      var end=moment().format('YYYY-MM-DD'),start=moment().subtract(30, 'days').format('YYYY-MM-DD');
      this.date=[start,end];
      this.getType();
