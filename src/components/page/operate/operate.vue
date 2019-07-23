@@ -72,7 +72,7 @@
                           </el-select>
                     </el-form-item>
                </el-form>
-               <el-button type="primary" @click="add" style="margin:30px auto 0;display: block;" >确认新增</el-button>
+               <el-button type="primary"  v-if="permission=='修改'" @click="add" style="margin:30px auto 0;display: block;" >确认新增</el-button>
           </el-tab-pane>
           <el-tab-pane label="补入库" name="2">
               <el-table
@@ -120,8 +120,8 @@
               </div>
 
               <div align="center" >
-                <el-button @click="addIn(1)" type="primary">全部入库</el-button>
-                <el-button @click="addIn(2)" type="primary">确认入库</el-button>
+                <el-button  v-if="permission=='修改'" @click="addIn(1)" type="primary">全部入库</el-button>
+                <el-button  v-if="permission=='修改'" @click="addIn(2)" type="primary">确认入库</el-button>
               </div>
           </el-tab-pane>
         </el-tabs>
@@ -137,6 +137,7 @@ export default {
     return {
       loading: false,
       loading2: false,
+      permission:false,
       activeName: "1",
       total:0,
       cur_page:1,
@@ -331,6 +332,7 @@ export default {
     },
   },
   mounted() {
+    this.permission=localStorage.permission;
     this.getDepartment()
     this.getType()
     this.getPerson()

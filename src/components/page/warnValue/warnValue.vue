@@ -24,7 +24,7 @@
                         <div style="color:red" >当前重量警戒值：1KG</div>
                     </el-form-item>
                </el-form>
-               <el-button type="primary" style="margin:30px auto 0;display: block;"  @click="save">保存</el-button>
+               <el-button type="primary" style="margin:30px auto 0;display: block;"  v-if="permission=='修改'"  @click="save">保存</el-button>
           </el-tab-pane>
           <el-tab-pane label="出库时间" name="2">
               <el-form ref="ruleForm2" class="new"  style="width:60%;margin:auto" :model="ruleForm2"  :rules="rules2" label-width="240px"   >
@@ -34,7 +34,7 @@
                     </el-form-item>
                </el-form>
               <div align="center" >
-                <el-button type="primary" @click="save2">保存</el-button>
+                <el-button type="primary"  v-if="permission=='修改'" @click="save2">保存</el-button>
               </div>
           </el-tab-pane>
         </el-tabs>
@@ -49,6 +49,7 @@ export default {
     return {
       loading: false,
       loading2: false,
+      permission:false,
       activeName: "1",
       type:'1',
       types:[
@@ -159,6 +160,7 @@ export default {
     },
   },
   mounted() {
+    this.permission=localStorage.permission;
     this.getData()
   }
 };

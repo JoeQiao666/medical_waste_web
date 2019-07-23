@@ -32,6 +32,7 @@
               @click="openAdd(1)"
               type="primary"
               icon="el-icon-plus"
+              v-if="permission=='修改'"
             >新增</el-button>
           </div>
         </div>
@@ -46,8 +47,8 @@
           <el-table-column prop="username"  label="回收员姓名" align="center"  ></el-table-column>
           <el-table-column  label="操作" width="100px" align="center" > 
                 <template slot-scope="scope">
-                        <span class="pointer"  @click="detials(scope.$index, scope.row)">编辑</span>
-                        <span class="pointer" style="margin-left:10px"  @click="deal(scope.$index, scope.row)">删除</span>
+                        <span class="pointer"  v-if="permission=='修改'"  @click="detials(scope.$index, scope.row)">编辑</span>
+                        <span class="pointer"  v-if="permission=='修改'" style="margin-left:10px"  @click="deal(scope.$index, scope.row)">删除</span>
                  </template>
           </el-table-column>
         </el-table>
@@ -108,6 +109,7 @@ export default {
       loading: false,
       loading1: false,
       delVisible: false,
+      permission:false,
       kName:'',
       mTitle:'新增',
       tableData: [
@@ -282,6 +284,7 @@ export default {
     },
   },
   mounted() {
+    this.permission=localStorage.permission;
     this.getPerson();
     this.getData()
   }
