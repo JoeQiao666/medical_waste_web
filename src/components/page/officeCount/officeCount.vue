@@ -82,7 +82,8 @@
               @selection-change="handleSelectionChange"
               >
               <el-table-column
-                type="selection"
+                 type="index"
+                 label="序号"
                 width="55">
               </el-table-column>
                 <el-table-column
