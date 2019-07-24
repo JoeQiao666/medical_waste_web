@@ -1,6 +1,6 @@
 <template>
-    <div id="qrCode">
-      <canvas id="canvas"></canvas>
+    <div >
+      <canvas  id="canvas"></canvas>
     </div>
 </template>
 <style></style>

@@ -40,7 +40,7 @@
             >搜索</el-button>
             <el-button
               style="margin-left:10px"
-              @click="exportCode()"
+              @click="toQrcode()"
               type="primary"
               icon="el-icon-download"
             >导出二维码</el-button>
@@ -200,17 +200,26 @@
         </span>
     </el-dialog>
 
+   <div class="picBox" >
+        <div class="flex" v-for="(item,index) in tableData" v-bind:key="index" :id="'canvasBox'+index" style="height:120px;background:#FEFF00;width:280px;">
+                <div style="margin-top: 3px;" ><canvas class="canvas" :id="'canvas'+index"></canvas></div>
+                <div style=" color: #000;padding-left:20px">
+                    <div style="margin: 5px 0px 18px; font-size: 18px;font-weight: 600;">{{item.name}}</div>
+                    <div>医疗废物追溯</div>
+                    <div>yiliaofeiwuzhuisu</div>
+                </div>
+        </div>
+    </div>
   </div>
 </template>
 
 <script>
 const moment = require("moment");
 import vCode from '../../common/qrcode.vue';
-const make_cols = refstr => Array(XLSX.utils.decode_range(refstr).e.c + 1).fill(0).map((x,i) => ({name:XLSX.utils.encode_col(i), key:i}));
-const _SheetJSFT = [
-	"xlsx", "xlsb", "xlsm", "xls", "xml", "csv", "txt", "ods", "fods", "uos", "sylk", "dif", "dbf", "prn", "qpw", "123", "wb*", "wq*", "html", "htm"
-].map(function(x) { return "." + x; }).join(",");
+import QRCode from 'qrcode'
+import html2canvas from 'html2canvas';
 import XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 export default {
   data() {
     return {
@@ -289,6 +298,61 @@ export default {
     // 查询
     search() {
       console.log(this.date);
+    },
+    toQrcode(){
+          this.loading=true;
+          var imgArr=[],i=this.tableData.length-1,that=this;
+          setTimeout(()=>{
+              this.tableData.forEach((ele,ind)=>{
+                    var canvas = document.getElementById('canvas'+ind),name={id:ele.id,name:ele.positionName};
+                    // 生成二维码
+                    QRCode.toCanvas(canvas, JSON.stringify(name),{width:120,height:120,margin:0,logo:'121212'}, function (error) {
+                      if (error) console.error(error)
+                    })
+                    var canvasBox = document.getElementById('canvasBox'+ind);
+                      // dom生成base64图片
+                    html2canvas(canvasBox).then(function(canvas1) {
+                        var fullQuality = canvas1.toDataURL("image/jpeg", 1.0);
+                        fullQuality=fullQuality.substring(fullQuality.indexOf(',')+1);
+                        imgArr.push({text:ele.positionName+'.png',img:fullQuality});
+                        if(ind==i){
+                          // 调用打包函数
+                             that.wrapImageToZip(that,imgArr,'人员二维码打包');
+                        }
+                    });
+              })
+               this.loading=false;
+          },500)
+    },
+    wrapImageToZip(app,strFileList, filename){
+          console.log(strFileList)
+        let that = this,
+          arrImages = strFileList,
+          imageCount = arrImages.length,
+          numCount = 0,
+          arrBase64 = [];
+        arrImages.map(item => {
+            numCount++;
+            // arrBase64.push({ext, item});
+            if (numCount == imageCount) {
+                               
+              Promise.all([
+                // 下面是引入依赖包
+                require('jszip'),
+              ]).then(([JSZip, FileSaver]) => {
+                let zip = new JSZip();
+                let img = zip.folder('');
+                arrImages.map((ele)=>{
+                  img.file(ele.text,ele.img, {base64: true});
+                })
+                let fileName = `${filename}.zip`;
+                zip.generateAsync({type: 'blob'})
+                  .then(function (content) {
+                    saveAs(content, fileName);
+                  });
+              });
+            }
+       });
     },
     openAdd(type,row){
       this.loading1=false;
@@ -544,6 +608,10 @@ export default {
   height:46px;
   width:100%;
   padding:5px 0;
+}
+.picBox{
+  position: absolute;
+  left:-100vw;
 }
 
 </style>
