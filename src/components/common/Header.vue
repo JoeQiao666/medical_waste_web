@@ -7,7 +7,7 @@
             </div>
             <div class="header-right">
                 <div class="header-user-con">
-                    <div style="    font-size: 17px;">{{cName}}</div>
+                    <div style="    font-size: 17px;">{{depart}}</div>
                     <!-- 全屏显示 -->
                     <div class="btn-fullscreen" @click="handleFullScreen">
                         <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
@@ -59,7 +59,7 @@
                 fullscreen: false,
                 editVisible:false,
                 name: 'linxin',
-                cName:'赛虹桥社区卫生服务中心',
+                depart:'赛虹桥社区卫生服务中心',
                 ruleForm:{
                     old:'',
                     new1:'',
@@ -160,6 +160,7 @@
             if(document.body.clientWidth < 1500){
                 this.collapseChage();
             }
+            this.depart=localStorage.departmentName;
         
         }
     }

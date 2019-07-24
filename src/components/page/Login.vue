@@ -81,6 +81,7 @@
                                     localStorage.setItem('ms_username',this.ruleForm.username);
                                     if(response.data.data.permission){
                                          localStorage.setItem('permission',response.data.data.permission);
+                                         localStorage.setItem('departmentName',response.data.data.departmentName);
                                         this.$router.push('/');
                                     }else{
                                          this.$message('没有访问权限');

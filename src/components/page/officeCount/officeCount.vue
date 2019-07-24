@@ -58,7 +58,10 @@
                           <el-input style="width:140px" v-model="kName" placeholder="请输入科室名称"></el-input>
                         </div >
                         <el-button style="margin-left:10px" @click="getTable" type="primary" icon="el-icon-search">搜索</el-button>
-                        <el-dropdown @command="getExcel">
+                        <el-button  @click="exportExcel" type="primary" style="margin-left:10px" >
+                              导出报表
+                        </el-button>
+                        <!-- <el-dropdown @command="getExcel">
                             <el-button type="primary" style="margin-left:10px" >
                               导出报表<i class="el-icon-arrow-down el-icon--right"></i>
                             </el-button>
@@ -67,7 +70,7 @@
                               <el-dropdown-item  command="2" >明细表</el-dropdown-item>
                               <el-dropdown-item  command="3" >明细总览表</el-dropdown-item>
                             </el-dropdown-menu>
-                        </el-dropdown>
+                        </el-dropdown> -->
                 </div>
          </div>
          <el-table
@@ -247,6 +250,9 @@ export default {
                  
           });
       }
+    },
+    exportExcel(){
+
     },
     // 合计
      getSummaries(param) {
