@@ -364,7 +364,7 @@ export default {
                     html2canvas(canvasBox).then(function(canvas1) {
                         var fullQuality = canvas1.toDataURL("image/jpeg", 1.0);
                         fullQuality=fullQuality.substring(fullQuality.indexOf(',')+1);
-                        imgArr.push({text:ele.name+'.png',img:fullQuality});
+                        imgArr.push({text:ele.name+'-'+new Date().getTime()+'.png',img:fullQuality});
                         if(ind==i){
                           // 调用打包函数
                              that.wrapImageToZip(that,imgArr,'科室二维码打包');
@@ -445,6 +445,7 @@ export default {
                 arrImages.map((ele)=>{
                   img.file(ele.text,ele.img, {base64: true});
                 })
+                   console.log(img)
                 // 图片是base64格式,但不要base64前缀
                 let fileName = `${filename}.zip`;
                 zip.generateAsync({type: 'blob'})

@@ -304,7 +304,7 @@ export default {
           var imgArr=[],i=this.tableData.length-1,that=this;
           setTimeout(()=>{
               this.tableData.forEach((ele,ind)=>{
-                    var canvas = document.getElementById('canvas'+ind),name={id:ele.id,name:ele.positionName};
+                    var canvas = document.getElementById('canvas'+ind),name={id:ele.id,name:ele.username};
                     // 生成二维码
                     QRCode.toCanvas(canvas, JSON.stringify(name),{width:120,height:120,margin:0,logo:'121212'}, function (error) {
                       if (error) console.error(error)
@@ -314,7 +314,7 @@ export default {
                     html2canvas(canvasBox).then(function(canvas1) {
                         var fullQuality = canvas1.toDataURL("image/jpeg", 1.0);
                         fullQuality=fullQuality.substring(fullQuality.indexOf(',')+1);
-                        imgArr.push({text:ele.positionName+'.png',img:fullQuality});
+                        imgArr.push({text:ele.username+'-'+new Date().getTime()+'.png',img:fullQuality});
                         if(ind==i){
                           // 调用打包函数
                              that.wrapImageToZip(that,imgArr,'人员二维码打包');
@@ -325,7 +325,6 @@ export default {
           },500)
     },
     wrapImageToZip(app,strFileList, filename){
-          console.log(strFileList)
         let that = this,
           arrImages = strFileList,
           imageCount = arrImages.length,
@@ -333,9 +332,7 @@ export default {
           arrBase64 = [];
         arrImages.map(item => {
             numCount++;
-            // arrBase64.push({ext, item});
-            if (numCount == imageCount) {
-                               
+            if (numCount == imageCount) {             
               Promise.all([
                 // 下面是引入依赖包
                 require('jszip'),
@@ -345,6 +342,7 @@ export default {
                 arrImages.map((ele)=>{
                   img.file(ele.text,ele.img, {base64: true});
                 })
+                console.log(img)
                 let fileName = `${filename}.zip`;
                 zip.generateAsync({type: 'blob'})
                   .then(function (content) {

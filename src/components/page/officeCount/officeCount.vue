@@ -58,9 +58,7 @@
                           <el-input style="width:140px" v-model="kName" placeholder="请输入科室名称"></el-input>
                         </div >
                         <el-button style="margin-left:10px" @click="getTable" type="primary" icon="el-icon-search">搜索</el-button>
-                        <el-button  @click="exportExcel" type="primary" style="margin-left:10px" >
-                              导出报表
-                        </el-button>
+                        <el-button  @click="exportExcel" type="primary" icon="el-icon-download" style="margin-left:10px" >导出报表</el-button>
                         <!-- <el-dropdown @command="getExcel">
                             <el-button type="primary" style="margin-left:10px" >
                               导出报表<i class="el-icon-arrow-down el-icon--right"></i>
@@ -253,7 +251,7 @@ export default {
       }
     },
     exportExcel(){
-
+        window.open('/platform/hospital/rubbish/exportWeightByDepartment?isBottle=true')
     },
     // 合计
      getSummaries(param) {

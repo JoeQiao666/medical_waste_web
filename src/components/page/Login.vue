@@ -16,7 +16,7 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </div>
-                <div class="pointer" @click="findPass = true" style="font-size:12px" >忘记密码?</div>
+                <!-- <div class="pointer" @click="findPass = true" style="font-size:12px" >忘记密码?</div> -->
             </el-form>
         </div>
         <div class="ms-login" v-if="findPass" > 

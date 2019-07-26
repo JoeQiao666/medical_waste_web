@@ -374,7 +374,7 @@ export default {
     },
     // 导出报表
     getExcel(type){
-     
+       window.open('/platform/hospital/rubbish/exportWeightByDepartment?isBottle=true&status=1')
     },
     // 导出报表二级
     getExcel1(type){

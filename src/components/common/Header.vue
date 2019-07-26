@@ -31,15 +31,15 @@
         </div>
          <!-- 编辑弹出框 -->
         <el-dialog title="修改密码" :visible.sync="editVisible" width="35%"  >
-            <el-form ref="ruleForm"  :model="ruleForm"  :rules="rules" label-width="120px"   >
+            <el-form ref="ruleForm"  :model="ruleForm"  :rules="rules"  v-loading="loading" label-width="120px"   >
                 <el-form-item label="旧密码" prop="old" required>
                     <el-input v-model="ruleForm.old"  ></el-input>
                 </el-form-item>
                 <el-form-item label="新密码" prop="new1" required>
-                    <el-input v-model="ruleForm.new1"></el-input>
+                    <el-input v-model="ruleForm.new1" type="password"></el-input>
                 </el-form-item>
                 <el-form-item label="确认新密码" prop="new2" required>
-                    <el-input v-model="ruleForm.new2"  ></el-input>
+                    <el-input v-model="ruleForm.new2" type="password" ></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer"  >
@@ -58,6 +58,7 @@
                 collapse: false,
                 fullscreen: false,
                 editVisible:false,
+                loading:false,
                 name: 'linxin',
                 depart:'赛虹桥社区卫生服务中心',
                 ruleForm:{
@@ -69,7 +70,7 @@
                     old: [
                         { required: true, message: '请输入旧密码' }
                     ],
-                    new11: [
+                    new1: [
                         { required: true, message: '请输入新密码' }
                     ],
                     new2: [
@@ -149,12 +150,28 @@
             saveEdit(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        // this.add()
+                        if(this.ruleForm.new1==this.ruleForm.new2){
+                               this.change()
+                        }else{
+                              this.$message.error('新密码两次输入不一致');
+                        }
                     } else {
                         return false;
                     }
                 });
             },
+            change(){
+                 this.loading=true;
+                 this.$axios({
+                    method:'put',
+                    url:'/platform/sys/user/doChangePassword?oldPassword='+this.ruleForm.old+'&newPassword='+this.ruleForm.new1,
+                 }).then((response) =>{    
+                       this.loading=false;
+                       this.$message.error(response.data.msg);
+                }).catch((error) =>{
+                    console.log(error)    
+                })
+            }
         },
         mounted(){
             if(document.body.clientWidth < 1500){
