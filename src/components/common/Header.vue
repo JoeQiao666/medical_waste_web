@@ -168,6 +168,7 @@
                  }).then((response) =>{    
                        this.loading=false;
                        this.$message.error(response.data.msg);
+                       this.editVisible=false;
                 }).catch((error) =>{
                     console.log(error)    
                 })

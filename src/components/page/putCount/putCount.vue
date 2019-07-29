@@ -363,6 +363,7 @@ export default {
        }else{
           this.type=1;
        }
+       this.getType();
        this.getTable();
     },
     // 表格选中
@@ -529,9 +530,11 @@ export default {
         })
     },
     getType(){
+        var url='';
+        this.activeName==1?url='/platform/hospital/type/data?isBottle=false':url='/platform/hospital/type/data?isBottle=true';
         this.$axios({
             method:'get',
-            url:'/platform/hospital/type/data',
+            url:url
         }).then((res) =>{
             if(res.status==200){
                this.types=res.data.data;

@@ -54,7 +54,7 @@
                               </el-date-picker>
                         </div>
                         <div class="flex" style="margin-left:10px">
-                          <span class="demonstration" style="width:66px">科室名称：</span>
+                          <span class="demonstration" style="width:68px">科室名称：</span>
                           <el-input style="width:140px" v-model="kName" placeholder="请输入科室名称"></el-input>
                         </div >
                         <el-button style="margin-left:10px" @click="getTable" type="primary" icon="el-icon-search">搜索</el-button>
