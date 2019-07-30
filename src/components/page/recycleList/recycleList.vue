@@ -67,7 +67,7 @@
 
     <!-- 编辑弹出框 -->
     <el-dialog :title="mTitle" :visible.sync="editVisible" width="40%"  >
-        <el-form ref="ruleForm"  :model="ruleForm"  :rules="rules" label-width="120px" v-loading="loading1"  >
+        <el-form ref="ruleForm"  :model="ruleForm"  :rules="rules" label-width="130px" v-loading="loading1"  >
             <el-form-item label="回收公司地区：" prop="region" required>
                    <el-cascader
                       style="width:100%"
@@ -97,13 +97,13 @@
                   <el-radio v-model="ruleForm.gender" :label="1">男</el-radio>
                   <el-radio v-model="ruleForm.gender" :label="0">女</el-radio>
             </el-form-item>
-            <el-form-item label="负责人年龄" prop="age" required>
+            <el-form-item label="负责人年龄：" prop="age" required>
                   <el-input v-model="ruleForm.age" type="number"  ></el-input>
             </el-form-item>
-            <el-form-item label="描述" prop="description" >
+            <el-form-item label="描述：" prop="description" >
                   <el-input v-model="ruleForm.description"  ></el-input>
             </el-form-item>
-            <el-form-item label="卡号" prop="cardNumber" required>
+            <el-form-item label="卡号：" prop="cardNumber" required>
                   <el-input v-model="ruleForm.cardNumber"  ></el-input>
             </el-form-item>
         </el-form>

@@ -188,7 +188,7 @@
     <!-- 二维码弹出框 -->
     <el-dialog title="二维码展示" :visible.sync="codeVisible" width="40%"  >
         <div class="flex" style="height:120px;background:#FEFF00;">
-                <div style="margin-top: 2px;" ><v-Code :name="codeText" ></v-Code></div>
+                <div style="margin-top: 4px;" ><v-Code :name="codeText" ></v-Code></div>
                 <div style=" color: #000;padding-left:20px">
                     <div style="margin: 5px 0px 18px; font-size: 18px;font-weight: 600;">{{codeText.name}}</div>
                     <div>医疗废物追溯</div>
