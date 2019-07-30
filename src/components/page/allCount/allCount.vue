@@ -116,11 +116,7 @@ export default {
             startAngle: startAngle,
             endAngle: startAngle + Math.PI * 2
         });
-       this.chart2.intervalStack().position('value').color('type', [ '#00FF7F', '#46A3FC','#DC143C']).opacity(1).label('percent', {
-            formatter: function formatter(val,item) {
-              return item.point.type+':'+parseFloat(val * 100).toFixed(2) + '%';
-            }
-        }).select;
+       this.chart2.intervalStack().position('value').color('type', [ '#00FF7F', '#46A3FC','#DC143C']).opacity(1).select;
         this.chart2.tooltip({
             itemTpl: '<li>{name} : {value}%</li>',
             crosshairs: {
