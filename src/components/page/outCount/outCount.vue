@@ -96,9 +96,10 @@
     </div>
 
     <el-dialog title="操作记录" :visible.sync="tableVisble1" width="80%"  >
-        <div align="right" style="margin-top: -40px;" ><el-button @click="getExcel2" type="primary" icon="el-icon-download">导出报表</el-button></div>
+        <div align="right" style="margin-top: -40px;" ><el-button @click="getExcel1" type="primary" icon="el-icon-download">导出报表</el-button></div>
         <el-table
               :data="tableData2"
+              id="out-table"
               style="width: 100%"
               v-loading="loading1"
               @selection-change="handleSelectionChange"
@@ -218,6 +219,8 @@
 
 <script>
 const moment = require('moment');
+import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
 export default {
   data() {
     return {
@@ -334,7 +337,14 @@ export default {
     },
     // 导出报表二级
     getExcel1(type){
-     
+         /* generate workbook object from table */
+         var wb = XLSX.utils.table_to_book(document.querySelector('#out-table'))
+         /* get binary string as output */
+         var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+         try {
+             FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'sheetjs.xlsx')
+         } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
+         return wbout
     },
     // 导出报表三级
     getExcel2(type){

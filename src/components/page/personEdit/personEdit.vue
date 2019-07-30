@@ -293,7 +293,7 @@ export default {
     // 点击切换页码
     handleCurrentChange(val) {
       this.cur_page = val;
-      // this.getTask();
+      this.getData();
     },
     // 查询
     search() {
@@ -567,7 +567,7 @@ export default {
         this.loading=true;
         this.$axios({
             method:'get',
-            url:'/platform/sys/user/listPage??pageNumber='+this.cur_page+'&pageSize=10&username='+this.kName+'&positionName='+this.jName,
+            url:'/platform/sys/user/listPage?pageNumber='+this.cur_page+'&pageSize=10&username='+this.kName+'&positionName='+this.jName,
         }).then((res) =>{
             if(res.status==200){
                 this.loading=false;
