@@ -141,6 +141,9 @@
                     </el-option>
                   </el-select>
             </el-form-item>
+            <el-form-item label="卡号：" prop="cardId" >
+                  <el-input v-model="ruleForm.cardId" maxlength="8" ></el-input>
+            </el-form-item>
              <el-form-item label="权限：" prop="permission">
                      <el-radio v-model="ruleForm.permission" label="">无</el-radio>
                      <el-radio v-model="ruleForm.permission" label="查看">查看</el-radio>
@@ -256,6 +259,7 @@ export default {
         departmentId:'',
         roleId:'',
         permission:'查看',
+        cardId:''
       },
       rules: {
           loginname: [
@@ -275,6 +279,9 @@ export default {
           ],
           roleId: [
               { required: true, message: '请选择岗位' }
+          ],
+          cardId: [
+              { message: '请输入8位卡号',min:8,max:8 }
           ],
       },
       options:[

@@ -60,6 +60,7 @@
          <el-table
               :data="tableData"
               style="width: 100%"
+              id="table"
               v-loading="loading"
               >
               <el-table-column
@@ -302,6 +303,7 @@ export default {
 .radio /deep/ .el-radio:first-child {
   margin-left: 30px;
 }
+
 </style>
 <style>
 .btitle {

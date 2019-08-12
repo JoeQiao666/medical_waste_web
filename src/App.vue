@@ -42,15 +42,8 @@ export default {
       text-overflow:ellipsis;
       white-space: nowrap;
     }
-    /* .el-date-editor{
-      background: #69B2DB;
+    .el-table  .el-table__header,.el-table  .el-table__body{
+        width:100% !important;
     }
-    .el-date-editor .el-range-input{
-      background: #69B2DB;
-      color: #fff;
-    }
-    .el-date-editor .el-icon-date,.el-date-editor .el-range-separator{
-      color: #fff;
-    } */
 
 </style>
