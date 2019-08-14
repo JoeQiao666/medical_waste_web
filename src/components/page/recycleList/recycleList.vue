@@ -103,9 +103,9 @@
             <el-form-item label="描述：" prop="description" >
                   <el-input v-model="ruleForm.description"  ></el-input>
             </el-form-item>
-            <el-form-item label="卡号：" prop="cardNumber" required>
+            <!-- <el-form-item label="卡号：" prop="cardNumber" required>
                   <el-input v-model="ruleForm.cardNumber"  ></el-input>
-            </el-form-item>
+            </el-form-item> -->
         </el-form>
         <span slot="footer" class="dialog-footer"  >
             <el-button @click="editVisible = false">取 消</el-button>
@@ -155,7 +155,7 @@ export default {
         chargePhone:'',
         gender:1,
         age:'',
-        cardNumber:'',
+        // cardNumber:'',
         description:'',
       },
       rules: {
@@ -183,9 +183,9 @@ export default {
           gender: [
               { required: true, message: '请输入负责人年龄' }
           ],
-          cardNumber: [
-              { required: true, message: '请输入卡号' }
-          ],
+          // cardNumber: [
+          //     { required: true, message: '请输入卡号' }
+          // ],
 
       },
       options:rData,
@@ -213,7 +213,7 @@ export default {
           chargePhone:'',
           gender:1,
           age:'',
-          cardNumber:'',
+          // cardNumber:'',
           description:'',
         };
         if(this.$refs['ruleForm']){

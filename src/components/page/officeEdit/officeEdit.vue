@@ -137,7 +137,7 @@
         <div class="flex" style="height:120px;background:#FEFF00;">
                 <div style="margin-top: 4px;" ><v-Code :name="codeText" ></v-Code></div>
                 <div style=" color: #000;padding-left:20px">
-                    <div style="margin: 5px 0px 18px; font-size: 18px;font-weight: 600;">{{codeText.name}}</div>
+                    <div style="margin: 5px 0px 18px; font-size: 18px;font-weight: 600;">{{codeName}}</div>
                     <div>医疗废物追溯</div>
                     <div>yiliaofeiwuzhuisu</div>
                 </div>
@@ -178,6 +178,7 @@ export default {
       codeVisible: false,
       permission:false,
       codeText:'',
+      codeName:'',
       kName:'',
       mTitle:'新增',
       tableData: [
@@ -354,7 +355,7 @@ export default {
           var imgArr=[],i=this.tableData.length-1,that=this;
           setTimeout(()=>{
               this.tableData.forEach((ele,ind)=>{
-                    var canvas = document.getElementById('canvas'+ind),name={id:ele.id,name:ele.name};
+                    var canvas = document.getElementById('canvas'+ind),name={id:ele.id};
                     // 生成二维码
                     QRCode.toCanvas(canvas, JSON.stringify(name),{width:120,height:120,margin:0,logo:'121212'}, function (error) {
                       if (error) console.error(error)
@@ -403,7 +404,8 @@ export default {
       console.log(this.$refs.upload)
     },
     qrCode(index,row){
-        this.codeText={id:row.id,name:row.name}
+        this.codeText={id:row.id};
+        this.codeName=row.name;
         this.codeVisible=true;
     },
     getData(){
