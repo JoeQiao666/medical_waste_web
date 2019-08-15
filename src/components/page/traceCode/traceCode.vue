@@ -83,6 +83,7 @@
                 prop="weight"
                 sortable
                 label="重量"
+                :formatter="formatterWeight"
               >
               </el-table-column>
               <el-table-column
@@ -99,7 +100,7 @@
                 >
               </el-table-column>
               <el-table-column
-                prop="operatorName"
+                prop="recyclerName"
                 label="操作人"
                 >
               </el-table-column>
@@ -222,6 +223,19 @@ export default {
     }
   },
   methods: {
+       // 重量格式化
+    formatterWeight(row, column) {
+      var w=row[column.property];
+      if(w==undefined){
+          return '-';
+      }
+      if(w==''){
+        w='0kg'
+      }else{
+        w=w+'kg'
+      }
+      return w;
+    },
      // status格式化
     formatter(row, column) {
               var is='';
@@ -261,9 +275,11 @@ export default {
     },
    getData(){
         this.loading=true;
+        var date=[];
+        this.date?date=this.date:date=[null,null];
         this.$axios({
             method:'get',
-            url:'/platform/hospital/rubbish/listPage?isBottle=true&pageNumber='+this.cur_page+'&pageSize=10&start='+this.date[0]+'&end='+this.date[1]+'&status='+this.status,
+            url:'/platform/hospital/rubbish/listPage?isBottle=true&pageNumber='+this.cur_page+'&pageSize=10&start='+date[0]+'&end='+date[1]+'&status='+this.status,
         }).then((res) =>{
             if(res.status==200){
                 this.loading=false;

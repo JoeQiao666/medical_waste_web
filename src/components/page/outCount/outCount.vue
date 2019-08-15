@@ -141,7 +141,7 @@
                 暂存点已出库
               </el-table-column>
               <el-table-column
-                prop="operatorName"
+                prop="recyclerName"
                 label="操作人"
                 width="80"
                 >
@@ -167,7 +167,7 @@
           </div>
     </el-dialog>
     <el-dialog title="查看详情" :visible.sync="tableVisble2" width="80%"  >
-      <div class="cTitle" >垃圾编号： 54bbbb1Hbbbb3b7637dddd5d9859rJAs</div>
+      <div class="cTitle" >垃圾编号：{{details.id}}</div>
       <div class="flex detailBox">
           <div>
              <div class="ball" style="background:#67C23A" >科室出库</div>
@@ -333,7 +333,11 @@ export default {
     },
     // 导出报表
     getExcel(type){
-      window.open('/platform/hospital/rubbish/exportWeightByDepartment?isBottle=true&status=2')
+        if(this.activeName==2){
+            window.open('/platform/hospital/rubbish/exportWeightByDepartment?isBottle=true&status=1')
+        }else{
+            window.open('/platform/hospital/rubbish/exportWeightByDepartment?isBottle=false&status=1')
+        }
     },
     // 导出报表二级
     getExcel1(type){
@@ -407,8 +411,8 @@ export default {
          this.storeTime=row.storeTime;
          this.getDetailTable(row.storeTime);
        }else if(t==2){
-         row.storeTime=moment(parseFloat(row.storeAt)).format('YYYY-MM-DD HH:mm:ss');
-         row.recycleTime=moment(parseFloat(row.recycleAt)).format('YYYY-MM-DD HH:mm:ss');
+         row.storeTime=moment(parseFloat(row.storeAt*1000)).format('YYYY-MM-DD HH:mm:ss');
+         row.recycleTime=moment(parseFloat(row.recycleAt*1000)).format('YYYY-MM-DD HH:mm:ss');
          this.details=row;
          this.tableVisble2=true;
        }
@@ -565,13 +569,16 @@ export default {
   padding-left: 22%;
   margin:20px 0;
 }
+.infoBox>div{
+  margin-bottom: 6px;
+}
 .infoBox span{
-  width: 112px;
+  /* width: 112px; */
   display: inline-block;
 }
-.infoBox1 span{
+/* .infoBox1 span{
   width: 98px;
-}
+} */
 </style>
 
 

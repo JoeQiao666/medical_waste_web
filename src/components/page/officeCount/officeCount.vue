@@ -303,7 +303,9 @@ export default {
     getTable(){
         this.loading2=true;
         var url='';
-        this.activeName==1?url='/platform/hospital/rubbish/weightPerDayByDepartment?start='+ this.date[0]+'&end='+this.date[1]+'&name='+this.kName+'&pageNumber='+this.cur_page+'&pageSize=10&isBottle=false':url='/platform/hospital/rubbish/weightPerDayByDepartment?start='+ this.date[0]+'&end='+this.date[1]+'&name='+this.kName+'&pageNumber='+this.cur_page+'&pageSize=10&isBottle=true';
+        var date=[];
+        this.date?date=this.date:date=[null,null];
+        this.activeName==1?url='/platform/hospital/rubbish/weightPerDayByDepartment?start='+ date[0]+'&end='+date[1]+'&name='+this.kName+'&pageNumber='+this.cur_page+'&pageSize=10&isBottle=false':url='/platform/hospital/rubbish/weightPerDayByDepartment?start='+ date[0]+'&end='+date[1]+'&name='+this.kName+'&pageNumber='+this.cur_page+'&pageSize=10&isBottle=true';
         this.$axios({
             method:'get',
             url:url,

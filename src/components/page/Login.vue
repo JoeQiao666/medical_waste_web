@@ -78,7 +78,7 @@
                                 })
                             }).then((response) =>{    
                                 if(response.data.code==0){
-                                    localStorage.setItem('ms_username',this.ruleForm.username);
+                                    localStorage.setItem('ms_username',response.data.data.username);
                                     if(response.data.data.permission){
                                          localStorage.setItem('permission',response.data.data.permission);
                                          localStorage.setItem('departmentName',response.data.data.departmentName);

@@ -167,7 +167,12 @@
                     url:'/platform/sys/user/doChangePassword?oldPassword='+this.ruleForm.old+'&newPassword='+this.ruleForm.new1,
                  }).then((response) =>{    
                        this.loading=false;
-                       this.$message.error(response.data.msg);
+                       if(response.data.code==0){
+                            this.$message.success(response.data.msg);
+                       }else{
+                            this.$message.error(response.data.msg);
+                       }
+                       
                        this.editVisible=false;
                 }).catch((error) =>{
                     console.log(error)    

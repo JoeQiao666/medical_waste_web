@@ -25,7 +25,7 @@
               <span class="demonstration" style="margin-left:10px" >岗位：</span>
               <el-select style="width:140PX" v-model="jName" placeholder="请选择岗位">
                 <el-option
-                  v-for="item in options"
+                  v-for="(item,index) in options"
                   :key="item.roleId"
                   :label="item.name"
                   :value="item.name">
