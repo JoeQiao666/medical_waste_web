@@ -469,10 +469,10 @@ export default {
               url:'/platform/sys/user/batch',
               data:data
           }).then((res) =>{
+             this.loading2=false;
               if(res.data.code==0){
-              this.loading2=false;
               this.visible = false;
-              this.$message.error('添加成功');
+              this.$message.success('添加成功');
               this.getData()
               }else{
                   this.$message.error(res.data.msg);
@@ -506,7 +506,8 @@ export default {
         var arr=data.map((ele)=>{
             return{loginname:ele[0],password:ele[1],username:ele[2],jobNumber:ele[3],roleId:ele[4],departmentId:ele[5],permission:ele[6]=='无'?'':ele[6]}
         })
-        this.allAdd(arr)
+        // this.allAdd(arr)
+        this.newData=arr;
 			};
 			reader.readAsBinaryString(file.raw);
     },
@@ -518,10 +519,14 @@ export default {
       console.log(11)
     },
     upload(){
-      this.visible=true
+      if( this.$refs.upload){
+        this.$refs.upload.clearFiles();
+      }
+      this.visible=true;
     },
     uploads(){
-      this.$refs.upload.submit();
+      // this.$refs.upload.submit();
+       this.allAdd(this.newData)
     },
     qrCode(index,row){
         this.codeText={id:row.id,name:row.username}
@@ -550,7 +555,9 @@ export default {
             url:'/platform/hospital/position/data',
         }).then((res) =>{
             if(res.status==200){
-                this.options=res.data.data;
+                var data=res.data.data;
+                data.unshift({id: "999", name: "不限制", roleId:""});
+                this.options=data;
             }else{
                 this.$message.error(res.data.msg);
             }
@@ -572,9 +579,10 @@ export default {
     },
     getData(){
         this.loading=true;
+        var name=this.jName=='不限制'?'':this.jName;
         this.$axios({
             method:'get',
-            url:'/platform/sys/user/listPage?pageNumber='+this.cur_page+'&pageSize=10&username='+this.kName+'&positionName='+this.jName,
+            url:'/platform/sys/user/listPage?pageNumber='+this.cur_page+'&pageSize=10&username='+this.kName+'&positionName='+name,
         }).then((res) =>{
             if(res.status==200){
                 this.loading=false;

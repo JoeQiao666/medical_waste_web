@@ -266,10 +266,11 @@ export default {
               url:'/platform/hospital/department/batch',
               data:data
           }).then((res) =>{
+             this.loading=false;
               if(res.data.code==0){
-              this.loading=false;
+         
               this.visible = false;
-              this.$message.error('添加成功');
+              this.$message.success('添加成功');
               this.getData()
               }else{
                   this.$message.error(res.data.msg);
@@ -346,7 +347,8 @@ export default {
         var arr=data.map((ele)=>{
             return{"name":ele[0]}
         })
-        this.allAdd(arr)
+        // this.allAdd(arr)
+        this.newData=arr;
 			};
 			reader.readAsBinaryString(file.raw);
     },
@@ -397,11 +399,14 @@ export default {
       this.delVisible=true;
     },
     upload(){
-      this.visible=true
+      if( this.$refs.upload){
+        this.$refs.upload.clearFiles();
+      }
+      this.visible=true;
     },
     uploads(){
       // this.$refs.upload.submit();
-      console.log(this.$refs.upload)
+      this.allAdd(this.newData)
     },
     qrCode(index,row){
         this.codeText={id:row.id};

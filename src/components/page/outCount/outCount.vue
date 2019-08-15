@@ -445,7 +445,9 @@ export default {
     getTable(){
         this.loading=true;
         var url='';
-        this.activeName==1?url='/platform/hospital/rubbish/weightPerType?formatType='+this.cType+'&start='+ this.date[0]+'&end='+this.date[1]+'&isBottle=false&status=2&pageNumber='+this.cur_page+'&pageSize=10':url='/platform/hospital/rubbish/weightPerType?formatType='+this.cType+'&start='+ this.date[0]+'&end='+this.date[1]+'&isBottle=true&status=2&pageNumber='+this.cur_page+'&pageSize=10';
+        var date=[];
+        this.date?date=this.date:date=[null,null];
+        this.activeName==1?url='/platform/hospital/rubbish/weightPerType?formatType='+this.cType+'&start='+ date[0]+'&end='+date[1]+'&isBottle=false&status=2&pageNumber='+this.cur_page+'&pageSize=10':url='/platform/hospital/rubbish/weightPerType?formatType='+this.cType+'&start='+ date[0]+'&end='+date[1]+'&isBottle=true&status=2&pageNumber='+this.cur_page+'&pageSize=10';
         this.$axios({
             method:'get',
             url:url,
