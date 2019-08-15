@@ -15,7 +15,14 @@
       components: {
         QRCode: QRCode
       },
-
+      watch:{
+          name:{
+                  handler: function (val) {
+                     this.useqrcode()
+                  },
+                  deep: true
+          }
+      },
       methods: {
         useqrcode(){
           var canvas = document.getElementById('canvas');
@@ -24,7 +31,6 @@
           })
         }
       },
-
       mounted(){
             this.useqrcode();
       }

@@ -295,7 +295,7 @@ export default {
   },
   methods: {
     timeFormate(row){
-         return moment(row.opAt).format('YYYY-MM-DD HH:mm:ss');
+         return moment(row.opAt*1000).format('YYYY-MM-DD HH:mm:ss');
     },
     // 点击切换页码
     handleCurrentChange(val) {

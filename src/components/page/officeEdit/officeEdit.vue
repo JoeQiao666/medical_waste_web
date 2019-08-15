@@ -417,7 +417,7 @@ export default {
             if(res.status==200){
                 this.loading=false;
                 this.tableData=res.data.list.map((ele)=>{
-                    ele.time=moment(ele.opAt).format('YYYY-MM-DD HH:mm:ss')
+                    ele.time=moment(ele.opAt*1000).format('YYYY-MM-DD HH:mm:ss')
                     return ele
                 });
                 this.total=res.data.totalCount;
