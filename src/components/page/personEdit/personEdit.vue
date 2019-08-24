@@ -26,7 +26,7 @@
               <el-select style="width:140PX" v-model="jName" placeholder="请选择岗位">
                 <el-option
                   v-for="(item,index) in options"
-                  :key="item.roleId"
+                  :key="index"
                   :label="item.name"
                   :value="item.name">
                 </el-option>
@@ -120,21 +120,21 @@
                   <el-input v-model="ruleForm.jobNumber" ></el-input>
             </el-form-item>
             <el-form-item label="岗位：" prop="roleId" required>
-                   <el-select style="width:100%" v-model="ruleForm.roleId" placeholder="请选择">
+                   <el-select style="width:100%"   @change="jobChange" v-model="ruleForm.roleId" placeholder="请选择">
                      <el-option
-                      v-for="item in options"
-                      :key="item.roleId"
+                      v-for="(item,index) in options"
+                      :key="index"
                       :label="item.name"
-                       :value="item.roleId"
+                      :value="item.id"
                       >
                     </el-option>
                   </el-select>
             </el-form-item>
-            <el-form-item label="科室：" prop="departmentId" required>
+            <el-form-item label="科室：" prop="departmentId" :required="!hushi">
                    <el-select style="width:100%" v-model="ruleForm.departmentId" placeholder="请选择">
                      <el-option
-                      v-for="item in departments"
-                      :key="item.id"
+                      v-for="(item,index) in departments"
+                      :key="index"
                       :label="item.name"
                        :value="item.id"
                       >
@@ -151,7 +151,7 @@
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer"  >
-            <el-button @click="editVisible = false">取 消</el-button>
+            <el-button @click="editVisible = false;hushi=true">取 消</el-button>
             <el-button type="primary" @click="saveEdit('ruleForm')">确 定</el-button>
         </span>
     </el-dialog>
@@ -225,6 +225,15 @@ import XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 export default {
   data() {
+      var checkDepart  = (rule, value, callback) => {
+        if(this.hushi){
+
+        }else{
+          if (!value) {
+            return callback(new Error('请选择科室'));
+          }
+        }
+      };
     return {
       loading: false,
       loading1: false,
@@ -235,6 +244,7 @@ export default {
       codeVisible: false,
       codeText:'',
       kName:'',
+      hushi:true,
       jName:'',
       mTitle:'新增',
       tableData: [
@@ -275,7 +285,7 @@ export default {
               { required: true, message: '请输入工号' }
           ],
           departmentId: [
-              { required: true, message: '请选择科室' }
+              { validator: checkDepart, message: '请选择科室' }
           ],
           roleId: [
               { required: true, message: '请选择岗位' }
@@ -331,6 +341,36 @@ export default {
                this.loading=false;
           },500)
     },
+    jobChange(e){
+      var name;
+      this.options.forEach((ele)=>{
+           if(ele.id==e){
+              name=ele.name
+           }
+      })
+      if(name=='护士'){
+        this.hushi=false;
+      }else{
+        this.hushi=true;
+        this.saveEdit('ruleForm')
+      }
+    },
+    checkDepart(rule, value, callback){
+       if (!value) {
+          return callback(new Error('年龄不能为空'));
+        }
+        setTimeout(() => {
+          if (!Number.isInteger(value)) {
+            callback(new Error('请输入数字值'));
+          } else {
+            if (value < 18) {
+              callback(new Error('必须年满18岁'));
+            } else {
+              callback();
+            }
+          }
+        }, 1000);
+    },
     wrapImageToZip(app,strFileList, filename){
         let that = this,
           arrImages = strFileList,
@@ -349,7 +389,6 @@ export default {
                 arrImages.map((ele)=>{
                   img.file(ele.text,ele.img, {base64: true});
                 })
-                console.log(img)
                 let fileName = `${filename}.zip`;
                 zip.generateAsync({type: 'blob'})
                   .then(function (content) {
@@ -417,7 +456,8 @@ export default {
               if(res.data.code==0){
               this.loading1=false;
               this.editVisible = false;
-              this.getData()
+              this.getData();
+              this.$message.success('操作成功');
               }else{
                   this.$message.error(res.data.msg);
               }
@@ -436,7 +476,8 @@ export default {
               if(res.data.code==0){
               this.loading1=false;
               this.editVisible = false;
-              this.getData()
+              this.getData();
+               this.$message.success('操作成功');
               }else{
                   this.$message.error(res.data.msg);
               }
