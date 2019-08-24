@@ -155,6 +155,11 @@
                                 icon: 'fa fa-dot-circle-o',
                                 title: '警戒值'
                             },
+                            {
+                                index: '/nameSet',
+                                icon: 'fa fa-dot-circle-o',
+                                title: '名称设置'
+                            },
                             ]
                     },
                 ],

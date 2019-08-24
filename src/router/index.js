@@ -90,6 +90,11 @@ export default new Router({
                     meta: { title: '警戒值' }
                 },
                 {
+                    path: '/nameSet',
+                    component: resolve => require(['../components/page/nameSet/nameSet.vue'], resolve),
+                    meta: { title: '名称设置' }
+                },
+                {
                     path: '/404',
                     component: resolve => require(['../components/page/404.vue'], resolve),
                     meta: { title: '404' }

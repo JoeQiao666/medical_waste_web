@@ -6,7 +6,7 @@
           <i class="el-icon-location-outline"></i> 系统管理
         </el-breadcrumb-item>
         <el-breadcrumb-item>
-            补操作
+            警戒值
         </el-breadcrumb-item> 
       </el-breadcrumb>
     </div>
