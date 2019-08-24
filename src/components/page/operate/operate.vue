@@ -103,6 +103,7 @@
                 align="center"
                 sortable
                 label="重量"
+                :formatter="formatterWeight"
               >
               </el-table-column>
               <el-table-column
@@ -191,8 +192,21 @@ export default {
       
        }
     },
+      // 重量格式化
+    formatterWeight(row, column) {
+      var w=row[column.property];
+      if(w==undefined){
+          return '-';
+      }
+      if(w==''){
+        w='0kg'
+      }else{
+        w=w+'kg'
+      }
+      return w;
+    },
     formatter(row){
-        return moment(row.opAt).format('YYYY-MM-DD')
+        return moment(row.opAt*1000).format('YYYY-MM-DD')
     },
      // 点击切换页码
     handleCurrentChange(val){

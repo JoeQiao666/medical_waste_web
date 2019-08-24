@@ -49,7 +49,7 @@
               type="primary"
               icon="el-icon-download"
             >
-            <a style="color:#fff" href="../../../../static/file/科室导入模板.xls" download="人员导入模板.xls" >人员模板</a></el-button>
+            <a style="color:#fff" href="../../../../static/file/人员导入模板.xls" download="人员导入模板.xls" >人员模板</a></el-button>
             <el-button
               style="margin-left:10px"
               @click="upload()"

@@ -99,7 +99,7 @@ export default {
           this.getData();
     },
     timeFormatter(row){
-          return moment(row.storeAt).format('YYYY-MM-DD HH:mm:ss')
+          return moment(row.storeAt*1000).format('YYYY-MM-DD HH:mm:ss')
     },
     formatter(row){
       var is=''
