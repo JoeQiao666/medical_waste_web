@@ -221,11 +221,14 @@ export default {
        console.log(this.chooseIds)
     },
     add(){
+        this.ruleForm.opAt= this.ruleForm.opAt/1000;
         this.loading=true;
+        var data=this.ruleForm;
+        data.isBottle=true;
         this.$axios({
             method:'post',
             url:'/platform/hospital/rubbish/addDo',
-            data:this.ruleForm
+            data:data
         }).then((res) =>{
             if(res.status==200){
                 this.$message.success('操作成功！');

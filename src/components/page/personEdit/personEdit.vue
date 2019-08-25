@@ -119,8 +119,8 @@
             <el-form-item label="工号：" prop="jobNumber" required>
                   <el-input v-model="ruleForm.jobNumber" ></el-input>
             </el-form-item>
-            <el-form-item label="岗位：" prop="roleId" required>
-                   <el-select style="width:100%"   @change="jobChange" v-model="ruleForm.roleId" placeholder="请选择">
+            <el-form-item label="岗位：" prop="positionId" required>
+                   <el-select style="width:100%"   @change="jobChange" v-model="ruleForm.positionId" placeholder="请选择">
                      <el-option
                       v-for="(item,index) in options"
                       :key="index"
@@ -227,12 +227,13 @@ export default {
   data() {
       var checkDepart  = (rule, value, callback) => {
         if(this.hushi){
-
+          
         }else{
           if (!value) {
             return callback(new Error('请选择科室'));
           }
         }
+         callback();
       };
     return {
       loading: false,
@@ -267,7 +268,7 @@ export default {
         username:'',
         jobNumber:'',
         departmentId:'',
-        roleId:'',
+        positionId:'',
         permission:'查看',
         cardId:''
       },
@@ -287,7 +288,7 @@ export default {
           departmentId: [
               { validator: checkDepart, message: '请选择科室' }
           ],
-          roleId: [
+          positionId: [
               { required: true, message: '请选择岗位' }
           ],
           cardId: [
@@ -352,7 +353,12 @@ export default {
         this.hushi=false;
       }else{
         this.hushi=true;
-        this.saveEdit('ruleForm')
+        setTimeout(()=>{
+          this.$refs['ruleForm'].validate((valid) => {
+            console.log(valid)
+          })
+        },500)
+      
       }
     },
     checkDepart(rule, value, callback){
@@ -408,7 +414,7 @@ export default {
               username:'',
               jobNumber:'',
               departmentId:'',
-              roleId:'',
+              positionId:'',
               permission:'查看',
         };
         if(this.$refs['ruleForm']){
@@ -448,10 +454,20 @@ export default {
     // 添加
     add(){
         this.loading1=true;
+        var data=this.ruleForm;
+          this.options.forEach((ele)=>{
+            if(ele.id==data.positionId){
+                if(data.positionId==999){
+                  data.roleId=''
+                }else{
+                  data.roleId=ele.roleId
+                }
+           }
+        })
         this.$axios({
               method:'post',
               url:'/platform/sys/user/addDo',
-              data:this.ruleForm,
+              data:data,
           }).then((res) =>{
               if(res.data.code==0){
               this.loading1=false;
@@ -468,10 +484,20 @@ export default {
      // 编辑
     edit(){
         this.loading1=true;
+        var data=this.ruleForm;
+        this.options.forEach((ele)=>{
+           if(ele.id==data.positionId){
+             if(data.positionId==999){
+               data.roleId=''
+             }else{
+               data.roleId=ele.roleId
+             }
+           }
+        })
         this.$axios({
               method:'put',
               url:'/platform/sys/user/editDo',
-              data:this.ruleForm
+              data:data
           }).then((res) =>{
               if(res.data.code==0){
               this.loading1=false;
@@ -545,7 +571,7 @@ export default {
             return 
         }
         var arr=data.map((ele)=>{
-            return{loginname:ele[0],password:ele[1],username:ele[2],jobNumber:ele[3],roleId:ele[4],departmentId:ele[5],permission:ele[6]=='无'?'':ele[6]}
+            return{loginname:ele[0],password:ele[1],username:ele[2],jobNumber:ele[3],positionId:ele[4],departmentId:ele[5],permission:ele[6]=='无'?'':ele[6]}
         })
         // this.allAdd(arr)
         this.newData=arr;

@@ -27,7 +27,7 @@
               </div>
               <div class="flex" style="align-items: normal;">
                 <div style="width:100%">
-                  <div align="left" style="font-size:14px" >赛虹桥卫生服务中心</div>
+                  <div align="left" style="font-size:14px" >{{hospital}}</div>
                   <div class="canvas"  id="mountNode1"></div>
                 </div>
               </div>
@@ -120,6 +120,7 @@ export default {
   data() {
     return {
       loading: false,
+      hospital:'',
       loading2: false,
       title:'近30天各科室产生医废总量',
       type:'1',
@@ -346,7 +347,7 @@ export default {
            this.getData();
            this.getTable();
      }, 500);
-
+     this.hospital=localStorage.hospital;
   }
 };
 </script>

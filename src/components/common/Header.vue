@@ -3,7 +3,7 @@
         <div class="header">
             <div class="logo" @click="goIndex" >
             <!-- <img src="../../assets/img/logo.png" alt=""> -->
-                医疗废物管理系统
+                {{web}}
             </div>
             <div class="header-right">
                 <div class="header-user-con">
@@ -66,6 +66,7 @@
                     new1:'',
                     new2:'',
                 },
+                web:'',
                 rules: {
                     old: [
                         { required: true, message: '请输入旧密码' }
@@ -184,7 +185,7 @@
                 this.collapseChage();
             }
             this.depart=localStorage.departmentName;
-        
+            this.web=localStorage.web;
         }
     }
 </script>

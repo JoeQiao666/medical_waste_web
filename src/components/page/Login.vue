@@ -1,15 +1,15 @@
 <template>
     <div class="login-wrap">
         <div class="ms-login" v-if="!findPass">
-            <div class="ms-title">医疗废物管理系统</div>
+            <div class="ms-title">{{web}}</div>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
                 <el-form-item prop="username">
-                    <el-input v-model="ruleForm.username" placeholder="username">
+                    <el-input v-model="ruleForm.username" placeholder="请输入用户名">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="password" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
+                    <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>
@@ -42,9 +42,10 @@
         data: function(){
             return {
                 findPass:false,
+                web:'',
                 ruleForm: {
-                    username: 'superadmin',
-                    password: '1'
+                    username: '',
+                    password: ''
                 },
                 ruleForms:{
                     email:''
@@ -104,6 +105,22 @@
             submitForms(formName){
 
             }
+        },
+        mounted(){
+            this.$axios({
+                method:'get',
+                url:'/platform/hospital/name/data',
+            }).then((res) =>{
+                if(res.status==200){
+                    localStorage.hospital=res.data.data[0].hospital;
+                    localStorage.web=res.data.data[0].web;
+                    this.web=res.data.data[0].web;
+                }else{
+                    this.$message.error(res.data.msg);
+                }
+            }).catch((error) =>{
+                console.log(error)    
+            })
         }
     }
 </script>
