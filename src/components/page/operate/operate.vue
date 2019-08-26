@@ -224,7 +224,7 @@ export default {
         this.ruleForm.opAt= this.ruleForm.opAt/1000;
         this.loading=true;
         var data=this.ruleForm;
-        data.isBottle=true;
+        data.isBottle=0;
         this.$axios({
             method:'post',
             url:'/platform/hospital/rubbish/addDo',

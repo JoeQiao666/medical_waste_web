@@ -15,8 +15,8 @@
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
           <el-tab-pane label="医废类" name="1">
           </el-tab-pane>
-          <el-tab-pane label="盐水瓶" name="2">
-          </el-tab-pane>
+          <!-- <el-tab-pane label="盐水瓶" name="2">
+          </el-tab-pane> -->
         </el-tabs>
           <div class="cloudBox" >
               <div class="flex  headSelect" style="margin-bottom:50px;min-height:auto">

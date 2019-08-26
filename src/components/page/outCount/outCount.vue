@@ -16,9 +16,9 @@
           <el-tab-pane label="医废类" name="1">
            
           </el-tab-pane>
-          <el-tab-pane label="盐水瓶" name="2">
+          <!-- <el-tab-pane label="盐水瓶" name="2">
            
-          </el-tab-pane>
+          </el-tab-pane> -->
         </el-tabs>
       </div>
       <div class="borderBox">
