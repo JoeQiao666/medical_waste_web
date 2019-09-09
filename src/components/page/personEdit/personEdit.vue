@@ -571,7 +571,7 @@ export default {
             return 
         }
         var arr=data.map((ele)=>{
-            return{loginname:ele[0],password:ele[1],username:ele[2],jobNumber:ele[3],positionId:ele[4],departmentId:ele[5],permission:ele[6]=='无'?'':ele[6]}
+            return{loginname:ele[0],password:ele[1],username:ele[2],jobNumber:ele[3],positionName:ele[4],departmentName:ele[5],permission:ele[6]=='无'?'':ele[6]}
         })
         // this.allAdd(arr)
         this.newData=arr;

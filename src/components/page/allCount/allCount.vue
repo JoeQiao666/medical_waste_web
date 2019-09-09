@@ -116,7 +116,7 @@ export default {
             startAngle: startAngle,
             endAngle: startAngle + Math.PI * 2
         });
-       this.chart2.intervalStack().position('value').color('type', [ '#00FF7F', '#46A3FC','#DC143C','#909399','409EFF']).opacity(1).select;
+       this.chart2.intervalStack().position('value').color('type').opacity(1).select;
         this.chart2.tooltip({
             itemTpl: '<li>{name} : {value}%</li>',
             crosshairs: {
