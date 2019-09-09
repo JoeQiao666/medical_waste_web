@@ -21,7 +21,7 @@
                               <el-radio v-model="type" label="2">百分比(%)</el-radio>
                         </div>
                         <div> <el-input style="width:200px" @change='inputChange' v-model="ruleForm.inputVal" ></el-input></div>
-                        <div style="color:red" >当前重量警戒值：1KG</div>
+                        <div style="color:red">当前重量警戒值：{{type==1?dataB.w+'KG':dataB.p+'%'}}</div>
                     </el-form-item>
                </el-form>
                <el-button type="primary" style="margin:30px auto 0;display: block;"  v-if="permission=='修改'"  @click="save">保存</el-button>
@@ -51,6 +51,7 @@ export default {
       loading2: false,
       permission:false,
       activeName: "1",
+      dataB:{weight:0,percent:0},
       type:'1',
       types:[
         {id:1,name:'感染型'},
@@ -82,7 +83,7 @@ export default {
         }else{
           this.ruleForm.inputVal=this.data.percent
         }
-    }
+    },
   },
   methods: {
     // 切换tab
@@ -129,10 +130,13 @@ export default {
         }).then((res) =>{
             if(res.status==200){
                 this.loading=false;
+                var datas=res.data.data[0];
                 this.data=res.data.data[0];
                 this.ruleForm.inputVal=this.data.weight;
                 this.ruleForm2.inputVal=this.data.time;
                 this.id=this.data.id;
+
+                this.dataB={w:datas.weight,p:datas.percent};
             }else{
                 this.$message.error(res.data.msg);
             }
@@ -150,7 +154,7 @@ export default {
             if(res.status==200){
                  this.loading=false;
                  this.$message.success(res.data.msg);
-                //  this.getData();
+                 this.getData();
             }else{
                 this.$message.error(res.data.msg);
             }
