@@ -194,8 +194,8 @@
                 <div style="margin-top: 4px;" ><v-Code :name="codeText" ></v-Code></div>
                 <div style=" color: #000;padding-left:20px">
                     <div style="margin: 5px 0px 18px; font-size: 18px;font-weight: 600;">{{codeText.name}}</div>
-                    <div>医疗废物追溯</div>
-                    <div>yiliaofeiwuzhuisu</div>
+                    <div>医卫士医疗废物追溯</div>
+                    <div>yiweishiyiliaofeiwuzhuisu</div>
                 </div>
         </div>
         <span slot="footer" class="dialog-footer"  >
@@ -208,8 +208,8 @@
                 <div style="margin-top: 3px;" ><canvas class="canvas" :id="'canvas'+index"></canvas></div>
                 <div style=" color: #000;padding-left:20px">
                     <div style="margin: 5px 0px 18px; font-size: 18px;font-weight: 600;">{{item.name}}</div>
-                    <div>医疗废物追溯</div>
-                    <div>yiliaofeiwuzhuisu</div>
+                    <div>医卫士医疗废物追溯</div>
+                    <div>yiweishiyiliaofeiwuzhuisu</div>
                 </div>
         </div>
     </div>
