@@ -108,7 +108,7 @@
     <el-dialog :title="mTitle" :visible.sync="editVisible" width="40%"  >
         <el-form ref="ruleForm"  :model="ruleForm"  :rules="rules" label-width="120px" v-loading="loading1"  >
             <el-form-item label="账号：" prop="loginname" required>
-                  <el-input v-model="ruleForm.loginname" ></el-input>
+                  <el-input v-model="ruleForm.loginname" :disabled="dis" ></el-input>
             </el-form-item>
             <el-form-item label="密码：" prop="password" required>
                   <el-input v-model="ruleForm.password" ></el-input>
@@ -243,6 +243,7 @@ export default {
       permission:false,
       visible: false,
       codeVisible: false,
+      dis: false,
       codeText:'',
       kName:'',
       hushi:true,
@@ -420,7 +421,9 @@ export default {
         if(this.$refs['ruleForm']){
            this.$refs['ruleForm'].resetFields();
         }
+        this.dis=false;
       }else{
+        this.dis=true;
         this.ruleForm.password='';
         if(this.$refs['ruleForm']){
            this.$refs['ruleForm'].resetFields();
