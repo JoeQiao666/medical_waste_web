@@ -515,12 +515,17 @@ export default {
     deleteRow(){
         this.$axios({
               method:'DELETE',
-              url:'/platform/sys/user/delete?ids='+this.id,
+              url:'/platform/sys/user/delete/'+this.id,
+              // url:'/platform/sys/user/delete?id='+this.id,
           }).then((res) =>{
               if(res.status==200){
-                  this.$message.success('删除成功');
-                  this.delVisible=false;
-                  this.getData();
+                 if(res.data.code==0){
+                    this.$message.success('删除成功');
+                    this.getData();
+                 }else{
+                    this.$message.error(res.data.msg);
+                 }
+                   this.delVisible=false;
               }else{
                   this.$message.error(res.data.msg);
               }
@@ -653,6 +658,7 @@ export default {
         }).then((res) =>{
             if(res.status==200){
                 this.loading=false;
+                this.tableData=[];
                 this.tableData=res.data.list.map((ele)=>{
                   ele.permission=ele.permission?ele.permission:'';
                   return ele
